@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import studio.o7.octopus_sdk.adapter.InstantAdapter;
-import studio.o7.octopus_sdk.dto.ApiRequest;
 
 import java.time.Instant;
 
