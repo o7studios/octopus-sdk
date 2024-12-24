@@ -1,5 +1,11 @@
 # Octopus SDK
 
+Http client for the octopus backend.
+
+Requirements:
+ - Java 23
+ - Running Octopus instance
+
 ## Create HTTP Requests
 
 ### Sync
