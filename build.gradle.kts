@@ -1,9 +1,9 @@
 plugins {
-    id("java")
+    `java-library`
+    `maven-publish`
 }
 
 group = "studio.o7"
-version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -11,4 +11,9 @@ repositories {
 
 dependencies {
     implementation("com.google.code.gson:gson:2.11.0")
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
 }
