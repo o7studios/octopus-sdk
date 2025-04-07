@@ -12,5 +12,7 @@ public record PermissionCreateRequest(@SerializedName("_id") @Expose String name
                                       @SerializedName("permission_node") @Expose String permissionNode,
                                       @SerializedName("permission_value") @Expose String permissionValue,
                                       @SerializedName("permission_priority") @Expose Integer permissionPriority,
-                                      @SerializedName("expired_at") @Expose @JsonAdapter(InstantAdapter.class) Instant expiredAt) {
+                                      @SerializedName("expired_at") @Expose @JsonAdapter(InstantAdapter.class) Instant expiredAt,
+                                      @SerializedName("is_permanent") @Expose Boolean isPermanent,
+                                      @SerializedName("server_name") @Expose String serverName) {
 }

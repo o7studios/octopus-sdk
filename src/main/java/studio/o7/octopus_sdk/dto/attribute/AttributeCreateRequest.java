@@ -12,5 +12,7 @@ public record AttributeCreateRequest(@SerializedName("namespace") @Expose String
                                      @SerializedName("target_id") @Expose String targetId,
                                      @SerializedName("attribute_key") @Expose String attributeKey,
                                      @SerializedName("attribute_value") @Expose String attributeValue,
-                                     @SerializedName("expired_at") @Expose @JsonAdapter(InstantAdapter.class) Instant expiredAt) {
+                                     @SerializedName("expired_at") @Expose @JsonAdapter(InstantAdapter.class) Instant expiredAt,
+                                     @SerializedName("is_permanent") @Expose Boolean isPermanent,
+                                     @SerializedName("server_name") @Expose String serverName) {
 }

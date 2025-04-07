@@ -11,5 +11,7 @@ public record StatCreateRequest(@SerializedName("namespace") @Expose String name
                                 @SerializedName("target_id") @Expose String targetId,
                                 @SerializedName("stat_key") @Expose String statKey,
                                 @SerializedName("stat_value") @Expose Integer statValue,
-                                @SerializedName("expired_at") @Expose @JsonAdapter(InstantAdapter.class) Instant expiredAt) {
+                                @SerializedName("expired_at") @Expose @JsonAdapter(InstantAdapter.class) Instant expiredAt,
+                                @SerializedName("is_permanent") @Expose Boolean isPermanent,
+                                @SerializedName("server_name") @Expose String serverName) {
 }
