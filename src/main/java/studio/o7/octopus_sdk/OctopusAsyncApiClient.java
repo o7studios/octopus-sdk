@@ -7,12 +7,17 @@ import studio.o7.octopus_sdk.dto.ApiResponse;
 import studio.o7.octopus_sdk.dto.attribute.AttributeCreateRequest;
 import studio.o7.octopus_sdk.dto.attribute.AttributeQueryRequest;
 import studio.o7.octopus_sdk.dto.attribute.AttributeResponse;
+import studio.o7.octopus_sdk.dto.generic.GenericCreateRequest;
+import studio.o7.octopus_sdk.dto.generic.GenericQueryRequest;
+import studio.o7.octopus_sdk.dto.generic.GenericResponse;
 import studio.o7.octopus_sdk.dto.log.LogCreateRequest;
 import studio.o7.octopus_sdk.dto.log.LogQueryRequest;
 import studio.o7.octopus_sdk.dto.log.LogResponse;
 import studio.o7.octopus_sdk.dto.permission.PermissionCreateRequest;
 import studio.o7.octopus_sdk.dto.permission.PermissionQueryRequest;
 import studio.o7.octopus_sdk.dto.permission.PermissionResponse;
+import studio.o7.octopus_sdk.dto.restore.RestoreRequest;
+import studio.o7.octopus_sdk.dto.restore.RestoreResponse;
 import studio.o7.octopus_sdk.dto.stat.StatCreateRequest;
 import studio.o7.octopus_sdk.dto.stat.StatQueryRequest;
 import studio.o7.octopus_sdk.dto.stat.StatResponse;
@@ -222,5 +227,41 @@ public class OctopusAsyncApiClient implements AsyncApiClient {
     public CompletableFuture<ApiResponse<List<LogResponse>>> getUserLogAsync(LogQueryRequest request) {
         URI route = URI.create(getBaseUrl() + "/user/log/query");
         Type responseType = TypeToken.getParameterized(ApiResponse.class, List.class, LogResponse.class).getType();
-        return postAsync(request, route, responseType);    }
+        return postAsync(request, route, responseType);
+    }
+
+    @Override
+    public CompletableFuture<ApiResponse<RestoreResponse>> restoreServer(RestoreRequest request) {
+        URI route = URI.create(getBaseUrl() + "/server/restore");
+        Type responseType = TypeToken.getParameterized(ApiResponse.class, RestoreResponse.class).getType();
+        return postAsync(request, route, responseType);
+    }
+
+    @Override
+    public <T> CompletableFuture<ApiResponse<GenericResponse<T>>> createGenericEntry(GenericCreateRequest<T> request) {
+        URI route = URI.create(getBaseUrl() + "/generic/create");
+        Type responseType = TypeToken.getParameterized(ApiResponse.class, GenericResponse.class).getType();
+        return postAsync(request, route, responseType);
+    }
+
+    @Override
+    public CompletableFuture<ApiResponse<Integer>> deleteGenericEntry(GenericQueryRequest request) {
+        URI route = URI.create(getBaseUrl() + "/generic/delete");
+        Type responseType = TypeToken.getParameterized(ApiResponse.class, Integer.class).getType();
+        return postAsync(request, route, responseType);
+    }
+
+    @Override
+    public <T> CompletableFuture<ApiResponse<GenericResponse<T>>> queryGenericEntry(GenericQueryRequest request) {
+        URI route = URI.create(getBaseUrl() + "/generic/query");
+        Type responseType = TypeToken.getParameterized(ApiResponse.class, GenericResponse.class).getType();
+        return postAsync(request, route, responseType);
+    }
+
+    @Override
+    public <T> CompletableFuture<ApiResponse<List<GenericResponse<T>>>> findGenericEntries(GenericQueryRequest request) {
+        URI route = URI.create(getBaseUrl() + "/generic/find");
+        Type responseType = TypeToken.getParameterized(ApiResponse.class, List.class, GenericResponse.class).getType();
+        return postAsync(request, route, responseType);
+    }
 }
