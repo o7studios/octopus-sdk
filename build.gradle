@@ -64,7 +64,7 @@ publishing {
     repositories {
         maven {
             name = "GithubPackages"
-            url = "https://github.com/o7studios/octopus-sdk"
+            url = "https://maven.pkg.github.com/o7studios/octopus-sdk"
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
