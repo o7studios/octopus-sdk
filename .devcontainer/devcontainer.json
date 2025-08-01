@@ -1,0 +1,29 @@
+{
+  "name": "Octopus SDK",
+  "image": "ubuntu:latest",
+  "customizations" : {
+    "jetbrains" : {
+      "backend" : "IntelliJ",
+      "plugins": [
+        "org.jetbrains.plugins.go",
+        "com.jetbrains.rust",
+        "idea.plugin.protoeditor",
+        "com.github.bufbuild.intellij"
+      ]
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/git" : {},
+    "ghcr.io/devcontainers/features/go:1": {
+      "version": "1.24.5"
+    },
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "21.0.7",
+      "installGradle": true
+    },
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/devcontainers/features/rust:1": {},
+    "ghcr.io/mrsimonemms/devcontainers/buf:1": {}
+  },
+  "remoteUser": "ubuntu"
+}
