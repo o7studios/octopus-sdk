@@ -1,0 +1,7 @@
+version: 2
+before:
+  hooks:
+    - go mod download
+builds: []
+changelog:
+  sort: asc
