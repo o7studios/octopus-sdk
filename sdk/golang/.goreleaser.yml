@@ -3,5 +3,8 @@ before:
   hooks:
     - go mod download
 builds: []
+archives: []
+checksum:
+  disable: true
 changelog:
   sort: asc

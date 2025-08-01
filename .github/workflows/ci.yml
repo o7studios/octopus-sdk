@@ -5,17 +5,15 @@ on:
     types: [ opened, reopened ]
 
 env:
-  REGISTRY: ghcr.io
   JAVA_VERSION: '23'
   JAVA_DISTRIBUTION: 'temurin'
 
 permissions:
   contents: write
-  packages: write
 
 jobs:
   generate:
-    name: "Generate proto"
+    name: "🧬 Generate proto"
     runs-on: ubuntu-latest
     steps:
       - name: "📥 Checkout Code (Full History)"
@@ -114,9 +112,6 @@ jobs:
 
           [[ "$VERSION" =~ ^[0-9]+(\.[0-9]+)*$ ]] || exit -1
           ./gradlew publishToCentralPortal -Pversion="$VERSION"
-
-      - name: "🧪 Build plugin"
-        run: ./gradlew shadowJar
 
       - name: "🚀 Run GoReleaser"
         uses: goreleaser/goreleaser-action@v6

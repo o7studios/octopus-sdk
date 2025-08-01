@@ -1,6 +1,5 @@
 plugins {
     id("studio.o7.remora") version "0.2.5"
-    id("com.google.protobuf") version "0.9.5"
 }
 
 dependencies {
