@@ -63,6 +63,7 @@ jobs:
         with:
           version: latest
           args: --timeout 3m0s
+          working-directory: sdk/golang
 
   releaser:
     name: "🏁 Release"
