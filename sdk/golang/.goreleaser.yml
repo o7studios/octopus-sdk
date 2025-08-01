@@ -6,5 +6,7 @@ builds: []
 archives: []
 checksum:
   disable: true
+release:
+  skip_upload: true
 changelog:
   sort: asc
