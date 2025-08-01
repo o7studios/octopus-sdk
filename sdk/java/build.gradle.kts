@@ -17,8 +17,8 @@ sourceSets {
 group = "studio.o7"
 
 information {
-    artifactId = "octopus-api"
-    description = "Octopus Paper plugin api"
+    artifactId = "octopus-sdk"
+    description = "Octopus Java SDK"
     url = "https://o7.studio"
 
     developers {
@@ -48,8 +48,8 @@ information {
 
     licenses {
         license {
-            name = "The Apache Software License, Version 2.0"
-            url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+            name = "GNU General Public License, Version 3"
+            url = "https://www.gnu.org/licenses/gpl-3.0.txt"
         }
     }
 }
