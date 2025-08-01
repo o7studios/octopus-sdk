@@ -5,7 +5,6 @@
 **API & SDKs for o7studios product Octopus**
 
 - Uses [Protocol Buffers](https://protobuf.dev/) with [Buf](https://buf.build/)
-- 
 
 ## Development
 
