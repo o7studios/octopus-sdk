@@ -1,0 +1,30 @@
+version: v2
+
+managed:
+  enabled: true
+  override:
+    - file_option: java_package_prefix
+      value: studio.o7.octopus.sdk.gen
+
+plugins:
+  # Java
+  - remote: buf.build/protocolbuffers/java:v25.3
+    out: ./sdk/java/src/generated/java
+  - remote: buf.build/grpc/java:v1.62.2
+    out: ./sdk/java/src/generated/java
+
+  # Golang
+  - remote: buf.build/grpc/go:v1.5.1
+    out: ./sdk/golang/gen
+    opt:
+      - paths=source_relative
+  - remote: buf.build/protocolbuffers/go:v1.36.5
+    out: ./sdk/golang/gen
+    opt:
+      - paths=source_relative
+
+  # JavaScript / TypeScript
+  - remote: buf.build/bufbuild/es:v2.2.3
+    out: ./sdk/js/gen
+  - remote: buf.build/grpc/node:v1.13.0
+    out: ./sdk/js/gen

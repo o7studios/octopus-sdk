@@ -6,9 +6,9 @@
       "backend" : "IntelliJ",
       "plugins": [
         "org.jetbrains.plugins.go",
-        "com.jetbrains.rust",
         "idea.plugin.protoeditor",
-        "com.github.bufbuild.intellij"
+        "com.github.bufbuild.intellij",
+        "name.kropp.intellij.makefile"
       ]
     }
   },
