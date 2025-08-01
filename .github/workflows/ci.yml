@@ -123,5 +123,6 @@ jobs:
         with:
           version: latest
           args: release --clean
+          workdir: 'sdk/golang'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
