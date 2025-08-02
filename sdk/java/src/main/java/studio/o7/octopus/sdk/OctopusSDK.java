@@ -55,7 +55,11 @@ public class OctopusSDK {
         return connect(host, port);
     }
 
-    public void close() {
-        channel.shutdownNow();
+    public synchronized void close() {
+        if (channel != null) {
+            channel.shutdownNow();
+            channel = null;
+            stub = null;
+        }
     }
 }
