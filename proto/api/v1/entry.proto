@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+option go_package = "github.com/o7studios/octopus-sdk/sdk/golang/gen/api/v1;apiv1";
+
+package api.v1;
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+/**
+ * Entry
+ *
+ * An abstract concept representing various data entities, ranging from
+ * simple primitives to complex objects.
+ *
+ * Examples include:
+ *   - User kills for a game mode (permanent statistics)
+ *   - Objects such as kits or clans
+ *   - Friend requests, parties, or cached flags (temporary)
+ *   - List of users on the network or specific servers (temporary)
+ */
+message Entry {
+  // Unique key identifying the entry.
+  string key = 1;
+
+  // The data payload of the entry.
+  google.protobuf.Value data = 2;
+
+  // Timestamp when this entry was created.
+  google.protobuf.Timestamp created_at = 3;
+
+  // Timestamp of the last update.
+  optional google.protobuf.Timestamp updated_at = 4;
+
+  // Timestamp when the entry expires and should no longer be visible to clients.
+  optional google.protobuf.Timestamp expired_at = 5;
+
+  // Timestamp when the entry should be deleted from the database.
+  optional google.protobuf.Timestamp deleted_at = 6;
+}
+
+/**
+ * EntryRequest
+ *
+ * Request message to query entries by key, optionally filtered.
+ */
+message EntryRequest {
+  // Query key identifying the entries to query.
+  string key = 1;
+
+  // Optional filter to find specific objects
+  optional string filter = 2;
+}
+
+/**
+ * EntryResponse
+ *
+ * Response containing all entries matching the request criteria.
+ */
+message EntryResponse {
+  // List of entries matching the query.
+  repeated Entry entries = 1;
+}

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option go_package = "github.com/o7studios/octopus-sdk/sdk/golang/gen/api/v1;apiv1";
+
+package api.v1;
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+import "api/v1/entry.proto";
+import "api/v1/event.proto";
+
+service OctopusService {
+  rpc PublishEvent(Event) returns (PublishEventResponse);
+
+  rpc GetEntry(EntryRequest) returns (EntryResponse);
+
+  rpc Subscription(stream EventSubscriptionUpdate) returns (stream EventPublication);
+}
