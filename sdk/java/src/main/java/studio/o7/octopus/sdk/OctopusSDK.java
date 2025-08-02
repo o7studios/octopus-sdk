@@ -11,7 +11,7 @@ public class OctopusSDK {
     private ManagedChannel channel;
     private OctopusServiceGrpc.OctopusServiceStub stub;
 
-    private OctopusServiceGrpc.OctopusServiceStub connect(String host, int port) {
+    private synchronized OctopusServiceGrpc.OctopusServiceStub connect(String host, int port) {
         if (stub != null) return stub;
         if (channel == null)
             channel = OkHttpChannelBuilder.forAddress(host, port)
