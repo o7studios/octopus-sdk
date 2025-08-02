@@ -7,28 +7,34 @@ import studio.o7.octopus.sdk.gen.api.v1.OctopusServiceGrpc;
 
 @UtilityClass
 public class OctopusSDK {
+    private final System.Logger logger = System.getLogger("Octopus");
+    private ManagedChannel channel;
+    private OctopusServiceGrpc.OctopusServiceStub stub;
 
-    public OctopusServiceGrpc.OctopusServiceStub connect(String host, int port) {
-        ManagedChannel channel = OkHttpChannelBuilder.forAddress(host, port)
-                .usePlaintext()
-                .build();
+    private OctopusServiceGrpc.OctopusServiceStub connect(String host, int port) {
+        if (stub != null) return stub;
+        if (channel == null)
+            channel = OkHttpChannelBuilder.forAddress(host, port)
+                    .usePlaintext()
+                    .build();
 
-        return OctopusServiceGrpc.newStub(channel);
+        stub = OctopusServiceGrpc.newStub(channel);
+        return stub;
     }
 
     public OctopusServiceGrpc.OctopusServiceStub connect() {
         var host = System.getProperty("octopus.host");
         var portString = System.getProperty("octopus.port");
 
-        if (host.isEmpty()) {
+        if (host == null || host.isEmpty()) {
             host = System.getenv("OCTOPUS_HOST");
-            if (host.isEmpty())
+            if (host == null || host.isEmpty())
                 host = null;
         }
 
-        if (portString.isEmpty()) {
+        if (portString == null || portString.isEmpty()) {
             portString = System.getenv("OCTOPUS_PORT");
-            if (portString.isEmpty())
+            if (portString == null || portString.isEmpty())
                 portString = null;
         }
 
@@ -38,7 +44,7 @@ public class OctopusSDK {
             try {
                 port = Integer.parseInt(portString);
             } catch (Exception exception) {
-                System.out.println("ERROR: Invalid OCTOPUS_PORT '" + portString + "'");
+                logger.log(System.Logger.Level.ERROR, "Invalid OCTOPUS_PORT '" + portString + "'");
             }
         }
 
@@ -47,5 +53,9 @@ public class OctopusSDK {
         }
 
         return connect(host, port);
+    }
+
+    public void close() {
+        channel.shutdownNow();
     }
 }
