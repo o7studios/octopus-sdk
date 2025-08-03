@@ -32,7 +32,7 @@ public class OctopusSDK {
         return futureStub;
     }
 
-    private ManagedChannel connect() {
+    private synchronized ManagedChannel connect() {
         if (channel != null) return channel;
         var host = System.getProperty("octopus.host");
         var portString = System.getProperty("octopus.port");
@@ -70,7 +70,7 @@ public class OctopusSDK {
         return channel;
     }
 
-    public void close() {
+    public synchronized void close() {
         if (channel == null) return;
         channel.shutdownNow();
         channel = null;
