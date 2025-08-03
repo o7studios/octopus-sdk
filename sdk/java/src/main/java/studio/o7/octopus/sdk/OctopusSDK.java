@@ -8,21 +8,32 @@ import studio.o7.octopus.sdk.gen.api.v1.OctopusServiceGrpc;
 @UtilityClass
 public class OctopusSDK {
     private final System.Logger logger = System.getLogger("Octopus");
+
     private ManagedChannel channel;
     private OctopusServiceGrpc.OctopusServiceStub stub;
+    private OctopusServiceGrpc.OctopusServiceBlockingStub blockingStub;
+    private OctopusServiceGrpc.OctopusServiceFutureStub futureStub;
 
-    private synchronized OctopusServiceGrpc.OctopusServiceStub connect(String host, int port) {
+    public synchronized OctopusServiceGrpc.OctopusServiceStub stub() {
         if (stub != null) return stub;
-        if (channel == null)
-            channel = OkHttpChannelBuilder.forAddress(host, port)
-                    .usePlaintext()
-                    .build();
-
-        stub = OctopusServiceGrpc.newStub(channel);
+        stub = OctopusServiceGrpc.newStub(connect());
         return stub;
     }
 
-    public OctopusServiceGrpc.OctopusServiceStub connect() {
+    public synchronized OctopusServiceGrpc.OctopusServiceBlockingStub blockingStub() {
+        if (blockingStub != null) return blockingStub;
+        blockingStub = OctopusServiceGrpc.newBlockingStub(connect());
+        return blockingStub;
+    }
+
+    public synchronized OctopusServiceGrpc.OctopusServiceFutureStub futureStub() {
+        if (futureStub != null) return futureStub;
+        futureStub = OctopusServiceGrpc.newFutureStub(connect());
+        return futureStub;
+    }
+
+    private synchronized ManagedChannel connect() {
+        if (channel != null) return channel;
         var host = System.getProperty("octopus.host");
         var portString = System.getProperty("octopus.port");
 
@@ -52,14 +63,19 @@ public class OctopusSDK {
             host = "octopus";
         }
 
-        return connect(host, port);
+        channel = OkHttpChannelBuilder.forAddress(host, port)
+                .usePlaintext()
+                .build();
+
+        return channel;
     }
 
     public synchronized void close() {
-        if (channel != null) {
-            channel.shutdownNow();
-            channel = null;
-            stub = null;
-        }
+        if (channel == null) return;
+        channel.shutdownNow();
+        channel = null;
+        stub = null;
+        blockingStub = null;
+        futureStub = null;
     }
 }

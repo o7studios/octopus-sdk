@@ -22,7 +22,6 @@
       "installGradle": true
     },
     "ghcr.io/devcontainers/features/node:1": {},
-    "ghcr.io/devcontainers/features/rust:1": {},
     "ghcr.io/mrsimonemms/devcontainers/buf:1": {}
   },
   "remoteUser": "ubuntu"
