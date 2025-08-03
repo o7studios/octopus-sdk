@@ -8,21 +8,32 @@ import studio.o7.octopus.sdk.gen.api.v1.OctopusServiceGrpc;
 @UtilityClass
 public class OctopusSDK {
     private final System.Logger logger = System.getLogger("Octopus");
+
     private ManagedChannel channel;
     private OctopusServiceGrpc.OctopusServiceStub stub;
+    private OctopusServiceGrpc.OctopusServiceBlockingStub blockingStub;
+    private OctopusServiceGrpc.OctopusServiceFutureStub futureStub;
 
-    private OctopusServiceGrpc.OctopusServiceStub connect(String host, int port) {
+    public OctopusServiceGrpc.OctopusServiceStub stub() {
         if (stub != null) return stub;
-        if (channel == null)
-            channel = OkHttpChannelBuilder.forAddress(host, port)
-                    .usePlaintext()
-                    .build();
-
-        stub = OctopusServiceGrpc.newStub(channel);
+        stub = OctopusServiceGrpc.newStub(connect());
         return stub;
     }
 
-    public OctopusServiceGrpc.OctopusServiceStub connect() {
+    public OctopusServiceGrpc.OctopusServiceBlockingStub blockingStub() {
+        if (blockingStub != null) return blockingStub;
+        blockingStub = OctopusServiceGrpc.newBlockingStub(connect());
+        return blockingStub;
+    }
+
+    public OctopusServiceGrpc.OctopusServiceFutureStub futureStub() {
+        if (futureStub != null) return futureStub;
+        futureStub = OctopusServiceGrpc.newFutureStub(connect());
+        return futureStub;
+    }
+
+    private ManagedChannel connect() {
+        if (channel != null) return channel;
         var host = System.getProperty("octopus.host");
         var portString = System.getProperty("octopus.port");
 
@@ -52,10 +63,19 @@ public class OctopusSDK {
             host = "octopus";
         }
 
-        return connect(host, port);
+        channel = OkHttpChannelBuilder.forAddress(host, port)
+                .usePlaintext()
+                .build();
+
+        return channel;
     }
 
     public void close() {
+        if (channel == null) return;
         channel.shutdownNow();
+        channel = null;
+        stub = null;
+        blockingStub = null;
+        futureStub = null;
     }
 }
