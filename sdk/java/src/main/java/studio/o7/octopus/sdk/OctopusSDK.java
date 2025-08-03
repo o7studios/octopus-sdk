@@ -14,19 +14,19 @@ public class OctopusSDK {
     private OctopusServiceGrpc.OctopusServiceBlockingStub blockingStub;
     private OctopusServiceGrpc.OctopusServiceFutureStub futureStub;
 
-    public OctopusServiceGrpc.OctopusServiceStub stub() {
+    public synchronized OctopusServiceGrpc.OctopusServiceStub stub() {
         if (stub != null) return stub;
         stub = OctopusServiceGrpc.newStub(connect());
         return stub;
     }
 
-    public OctopusServiceGrpc.OctopusServiceBlockingStub blockingStub() {
+    public synchronized OctopusServiceGrpc.OctopusServiceBlockingStub blockingStub() {
         if (blockingStub != null) return blockingStub;
         blockingStub = OctopusServiceGrpc.newBlockingStub(connect());
         return blockingStub;
     }
 
-    public OctopusServiceGrpc.OctopusServiceFutureStub futureStub() {
+    public synchronized OctopusServiceGrpc.OctopusServiceFutureStub futureStub() {
         if (futureStub != null) return futureStub;
         futureStub = OctopusServiceGrpc.newFutureStub(connect());
         return futureStub;
