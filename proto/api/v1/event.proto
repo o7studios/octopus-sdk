@@ -8,38 +8,6 @@ import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/any.proto";
 
-/**
- * EntryMutation
- *
- * Represents a mutation (create, update, delete) operation on an entry.
- *
- * The mutation can be one of the following types:
- *   - CREATE: create a new entry
- *   - UPDATE: update an existing entry
- *   - DELETE: delete an entry permanently
- *   - SOFT_DELETE: mark an entry as deleted without removing it immediately
- */
-message EntryMutation {
-  enum MutationType {
-    MUTATION_TYPE_UNSPECIFIED = 0;
-    MUTATION_CREATE = 1;
-    MUTATION_UPDATE = 2;
-    MUTATION_DELETE = 3;
-    MUTATION_SOFT_DELETE = 4;
-  }
-
-  // The type of mutation to perform.
-  MutationType type = 1;
-
-  // The data payload associated with the mutation.
-  google.protobuf.Value data = 3;
-
-  // Timestamp when the entry expires and should no longer be visible to clients.
-  optional google.protobuf.Timestamp expired_at = 5;
-
-  // Timestamp when the entry should be deleted from the database.
-  optional google.protobuf.Timestamp deleted_at = 6;
-}
 
 /**
  * Event
@@ -58,10 +26,7 @@ message Event {
   // The event key used for subscriptions.
   string key = 1;
 
-  oneof body {
-    google.protobuf.Any data = 2;
-    EntryMutation entry_mutation = 3;
-  }
+  google.protobuf.Any data = 2;
 }
 
 /**
