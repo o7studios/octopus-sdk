@@ -42,38 +42,9 @@ message EntryMutation {
 }
 
 /**
- * Translation
- *
- * Contains a translated message for a specific locale.
- */
-message Translation {
-  // Locale country code (e.g., "en-US", "de-DE").
-  string code = 1;
-
-  // The translated content string.
-  string content = 2;
-}
-
-/**
- * PlayerNotification
- *
- * A notification message sent to a player, containing multiple translations.
- * Typically emitted by independent services.
- *
- * Examples:
- *   - Player bought a rank in the store
- *   - Player won a giveaway on Discord
- *   - External services notifying a player
- */
-message PlayerNotification {
-  // List of translated messages; the player's locale will be selected automatically.
-  repeated Translation translations = 1;
-}
-
-/**
  * Event
  *
- * Represents an event that can occur across services, such as sending notifications,
+ * Represents an event that can occur across services, such as
  * modifying entries, or just any abstract data.
  *
  * The event is identified by a key which follows the format:
@@ -90,7 +61,6 @@ message Event {
   oneof body {
     google.protobuf.Any data = 2;
     EntryMutation entry_mutation = 3;
-    PlayerNotification player_notification = 4;
   }
 }
 
