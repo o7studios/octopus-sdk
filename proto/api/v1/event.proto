@@ -108,12 +108,13 @@ message EventHandler {
   string key = 2;
 
   enum Priority {
-    LOWEST = 0;
-    LOW = 1;
-    NORMAL = 2;
-    HIGH = 3;
-    HIGHEST = 4;
-    MONITOR = 5;
+    UNKNOWN = 0;
+    LOWEST = 1;
+    LOW = 2;
+    NORMAL = 3;
+    HIGH = 4;
+    HIGHEST = 5;
+    MONITOR = 6;
   }
 
   // Priority defines when this handler shall be called. Lower is later. Default normal.
