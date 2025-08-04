@@ -6,6 +6,7 @@ package api.v1;
 
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
 
 /**
  * EntryMutation
@@ -41,24 +42,6 @@ message EntryMutation {
 }
 
 /**
- * Action
- *
- * Represents an abstract action that a service should perform.
- *
- * Examples include:
- *   - Sending a player to another server
- *   - Shutting down a server or invoking a specific function
- *   - Instructing a server to prepare for an event
- */
-message Action {
-  // The name of the action to be performed.
-  string action_name = 1;
-
-  // Additional metadata parameters for the action.
-  map<string, google.protobuf.Value> metadata = 2;
-}
-
-/**
  * Translation
  *
  * Contains a translated message for a specific locale.
@@ -91,7 +74,7 @@ message PlayerNotification {
  * Event
  *
  * Represents an event that can occur across services, such as sending notifications,
- * modifying entries, or triggering actions.
+ * modifying entries, or just any abstract data.
  *
  * The event is identified by a key which follows the format:
  * <system>::<field>::<uuid>
@@ -104,37 +87,42 @@ message Event {
   // The event key used for subscriptions.
   string key = 1;
 
-  // The body of the event, one of the possible types.
   oneof body {
-    PlayerNotification player_notification = 2;
+    google.protobuf.Any data = 2;
     EntryMutation entry_mutation = 3;
-    Action action = 4;
+    PlayerNotification player_notification = 4;
   }
 }
 
 /**
- * Request to subscribe to this list of event keys.
+ * EventHandler
+ *
+ * Represents an handler which listens to an event on a specific key.
+ * It's priority defines when it shall be called.
  */
-message EventSubscriptionUpdate {
-  // Identifier of the service (e.g. service-name)
+message EventHandler {
+  // Identifier of the handler (e.g. service-name-handler-id)
   string identifier = 1;
 
-  // List of keys to subscribe to
-  repeated string keys = 2;
+  // Key to subscribe to
+  string key = 2;
+
+  enum Priority {
+    LOWEST = 0;
+    LOW = 1;
+    NORMAL = 2;
+    HIGH = 3;
+    HIGHEST = 4;
+    MONITOR = 5;
+  }
+
+  // Priority defines when this handler shall be called. Lower is later. Default normal.
+  optional Priority priority = 3;
 }
 
-/**
- * Publication containing event updates for subscribed keys.
- */
-message EventPublication {
-  repeated Event events = 1;
-}
+message EventCall {
+  // Identifier of the handler (e.g. service-name-handler-id)
+  string identifier = 1;
 
-/**
- * Response acknowledging the result of emitting an event.
- */
-message PublishEventResponse {
-
-  // Will be true if the event was successful
-  bool success = 1;
+  Event event = 2;
 }
