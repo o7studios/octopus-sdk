@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    api(libs.gson)
     compileOnlyApi(libs.bundles.grpc)
     compileOnlyApi(libs.bundles.googleProtobuf)
     compileOnlyApi(libs.javax)

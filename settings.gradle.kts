@@ -6,6 +6,7 @@ dependencyResolutionManagement {
             version("grpc", "1.74.0")
             version("googleProtobuf", "4.31.1")
             version("javax", "1.3.2")
+            version ("gson", "2.13.1")
 
             library("javax", "javax.annotation", "javax.annotation-api").versionRef("javax")
 
@@ -17,6 +18,8 @@ dependencyResolutionManagement {
 
             library("protobuf-java", "com.google.protobuf", "protobuf-java").versionRef("googleProtobuf")
             library("protobuf-java-util", "com.google.protobuf", "protobuf-java-util").versionRef("googleProtobuf")
+
+            library("gson", "com.google.code.gson", "gson").versionRef("gson")
 
             bundle("googleProtobuf", listOf(
                 "protobuf-java-util",

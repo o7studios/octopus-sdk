@@ -6,14 +6,41 @@ package api.v1;
 
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
 
 import "api/v1/entry.proto";
 import "api/v1/event.proto";
 
 service OctopusService {
-  rpc PublishEvent(Event) returns (PublishEventResponse);
+  /**
+   * CallEvent
+   *
+   * Calls an event to all it's listeners and returns
+   * with a possibly modified version from the listeners.
+   */
+  rpc CallEvent(Event) returns (Event);
+
+  /**
+   * RegisterListener
+   *
+   * Registers an event handler.
+   */
+  rpc RegisterListener(EventHandler) returns (google.protobuf.Empty);
+
+  /**
+   * UnregisterListener
+   *
+   * Unregisters an event handler.
+   */
+  rpc UnregisterListener(EventHandler) returns (google.protobuf.Empty);
+
+  /**
+   * Listen
+   *
+   * Listens for events on the registered handlers.
+   * Replies with a (possibly) modified response call (e.g. cancel).
+   */
+  rpc Listen(stream EventCall) returns (stream EventCall);
 
   rpc GetEntry(EntryRequest) returns (EntryResponse);
-
-  rpc Subscription(stream EventSubscriptionUpdate) returns (stream EventPublication);
 }
