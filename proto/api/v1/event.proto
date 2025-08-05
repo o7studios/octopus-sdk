@@ -58,15 +58,9 @@ message EventHandler {
   optional Priority priority = 3;
 }
 
-message EventCall {
+message EventCallback {
   // Identifier of the handler (e.g. service-name-handler-id)
   string identifier = 1;
 
   Event event = 2;
-}
-
-message EventCallback {
-  string identifier = 1;
-
-  EventCall call = 2;
 }

@@ -26,7 +26,7 @@ service OctopusService {
    * Listens for events on the registered handler.
    * Replies with a (possibly) modified response call (e.g. cancel).
    */
-  rpc Listen(EventHandler) returns (stream EventCall);
+  rpc Listen(EventHandler) returns (stream Event);
 
   rpc Callback(EventCallback) returns (google.protobuf.Empty);
 
