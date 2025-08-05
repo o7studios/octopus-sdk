@@ -20,11 +20,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	OctopusService_CallEvent_FullMethodName          = "/api.v1.OctopusService/CallEvent"
-	OctopusService_RegisterListener_FullMethodName   = "/api.v1.OctopusService/RegisterListener"
-	OctopusService_UnregisterListener_FullMethodName = "/api.v1.OctopusService/UnregisterListener"
-	OctopusService_Listen_FullMethodName             = "/api.v1.OctopusService/Listen"
-	OctopusService_GetEntry_FullMethodName           = "/api.v1.OctopusService/GetEntry"
+	OctopusService_CallEvent_FullMethodName = "/api.v1.OctopusService/CallEvent"
+	OctopusService_Listen_FullMethodName    = "/api.v1.OctopusService/Listen"
+	OctopusService_Callback_FullMethodName  = "/api.v1.OctopusService/Callback"
+	OctopusService_GetEntry_FullMethodName  = "/api.v1.OctopusService/GetEntry"
 )
 
 // OctopusServiceClient is the client API for OctopusService service.
@@ -38,21 +37,12 @@ type OctopusServiceClient interface {
 	// with a possibly modified version from the listeners.
 	CallEvent(ctx context.Context, in *Event, opts ...grpc.CallOption) (*Event, error)
 	// *
-	// RegisterListener
-	//
-	// Registers an event handler.
-	RegisterListener(ctx context.Context, in *EventHandler, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// *
-	// UnregisterListener
-	//
-	// Unregisters an event handler.
-	UnregisterListener(ctx context.Context, in *EventHandler, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// *
 	// Listen
 	//
-	// Listens for events on the registered handlers.
+	// Listens for events on the registered handler.
 	// Replies with a (possibly) modified response call (e.g. cancel).
-	Listen(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[EventCall, EventCall], error)
+	Listen(ctx context.Context, in *EventHandler, opts ...grpc.CallOption) (grpc.ServerStreamingClient[EventCall], error)
+	Callback(ctx context.Context, in *EventCallback, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetEntry(ctx context.Context, in *EntryRequest, opts ...grpc.CallOption) (*EntryResponse, error)
 }
 
@@ -74,38 +64,34 @@ func (c *octopusServiceClient) CallEvent(ctx context.Context, in *Event, opts ..
 	return out, nil
 }
 
-func (c *octopusServiceClient) RegisterListener(ctx context.Context, in *EventHandler, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, OctopusService_RegisterListener_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *octopusServiceClient) UnregisterListener(ctx context.Context, in *EventHandler, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, OctopusService_UnregisterListener_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *octopusServiceClient) Listen(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[EventCall, EventCall], error) {
+func (c *octopusServiceClient) Listen(ctx context.Context, in *EventHandler, opts ...grpc.CallOption) (grpc.ServerStreamingClient[EventCall], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	stream, err := c.cc.NewStream(ctx, &OctopusService_ServiceDesc.Streams[0], OctopusService_Listen_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[EventCall, EventCall]{ClientStream: stream}
+	x := &grpc.GenericClientStream[EventHandler, EventCall]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
 	return x, nil
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type OctopusService_ListenClient = grpc.BidiStreamingClient[EventCall, EventCall]
+type OctopusService_ListenClient = grpc.ServerStreamingClient[EventCall]
+
+func (c *octopusServiceClient) Callback(ctx context.Context, in *EventCallback, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, OctopusService_Callback_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
 
 func (c *octopusServiceClient) GetEntry(ctx context.Context, in *EntryRequest, opts ...grpc.CallOption) (*EntryResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
@@ -128,21 +114,12 @@ type OctopusServiceServer interface {
 	// with a possibly modified version from the listeners.
 	CallEvent(context.Context, *Event) (*Event, error)
 	// *
-	// RegisterListener
-	//
-	// Registers an event handler.
-	RegisterListener(context.Context, *EventHandler) (*emptypb.Empty, error)
-	// *
-	// UnregisterListener
-	//
-	// Unregisters an event handler.
-	UnregisterListener(context.Context, *EventHandler) (*emptypb.Empty, error)
-	// *
 	// Listen
 	//
-	// Listens for events on the registered handlers.
+	// Listens for events on the registered handler.
 	// Replies with a (possibly) modified response call (e.g. cancel).
-	Listen(grpc.BidiStreamingServer[EventCall, EventCall]) error
+	Listen(*EventHandler, grpc.ServerStreamingServer[EventCall]) error
+	Callback(context.Context, *EventCallback) (*emptypb.Empty, error)
 	GetEntry(context.Context, *EntryRequest) (*EntryResponse, error)
 	mustEmbedUnimplementedOctopusServiceServer()
 }
@@ -157,14 +134,11 @@ type UnimplementedOctopusServiceServer struct{}
 func (UnimplementedOctopusServiceServer) CallEvent(context.Context, *Event) (*Event, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CallEvent not implemented")
 }
-func (UnimplementedOctopusServiceServer) RegisterListener(context.Context, *EventHandler) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RegisterListener not implemented")
-}
-func (UnimplementedOctopusServiceServer) UnregisterListener(context.Context, *EventHandler) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UnregisterListener not implemented")
-}
-func (UnimplementedOctopusServiceServer) Listen(grpc.BidiStreamingServer[EventCall, EventCall]) error {
+func (UnimplementedOctopusServiceServer) Listen(*EventHandler, grpc.ServerStreamingServer[EventCall]) error {
 	return status.Errorf(codes.Unimplemented, "method Listen not implemented")
+}
+func (UnimplementedOctopusServiceServer) Callback(context.Context, *EventCallback) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Callback not implemented")
 }
 func (UnimplementedOctopusServiceServer) GetEntry(context.Context, *EntryRequest) (*EntryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetEntry not implemented")
@@ -208,48 +182,34 @@ func _OctopusService_CallEvent_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _OctopusService_RegisterListener_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EventHandler)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(OctopusServiceServer).RegisterListener(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: OctopusService_RegisterListener_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OctopusServiceServer).RegisterListener(ctx, req.(*EventHandler))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _OctopusService_UnregisterListener_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EventHandler)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(OctopusServiceServer).UnregisterListener(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: OctopusService_UnregisterListener_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OctopusServiceServer).UnregisterListener(ctx, req.(*EventHandler))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _OctopusService_Listen_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(OctopusServiceServer).Listen(&grpc.GenericServerStream[EventCall, EventCall]{ServerStream: stream})
+	m := new(EventHandler)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(OctopusServiceServer).Listen(m, &grpc.GenericServerStream[EventHandler, EventCall]{ServerStream: stream})
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type OctopusService_ListenServer = grpc.BidiStreamingServer[EventCall, EventCall]
+type OctopusService_ListenServer = grpc.ServerStreamingServer[EventCall]
+
+func _OctopusService_Callback_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EventCallback)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OctopusServiceServer).Callback(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OctopusService_Callback_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OctopusServiceServer).Callback(ctx, req.(*EventCallback))
+	}
+	return interceptor(ctx, in, info, handler)
+}
 
 func _OctopusService_GetEntry_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(EntryRequest)
@@ -281,12 +241,8 @@ var OctopusService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _OctopusService_CallEvent_Handler,
 		},
 		{
-			MethodName: "RegisterListener",
-			Handler:    _OctopusService_RegisterListener_Handler,
-		},
-		{
-			MethodName: "UnregisterListener",
-			Handler:    _OctopusService_UnregisterListener_Handler,
+			MethodName: "Callback",
+			Handler:    _OctopusService_Callback_Handler,
 		},
 		{
 			MethodName: "GetEntry",
@@ -298,7 +254,6 @@ var OctopusService_ServiceDesc = grpc.ServiceDesc{
 			StreamName:    "Listen",
 			Handler:       _OctopusService_Listen_Handler,
 			ServerStreams: true,
-			ClientStreams: true,
 		},
 	},
 	Metadata: "api/v1/service.proto",
