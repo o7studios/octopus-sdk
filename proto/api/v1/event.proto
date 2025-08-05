@@ -6,7 +6,6 @@ package api.v1;
 
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/any.proto";
 
 
 /**
@@ -26,7 +25,7 @@ message Event {
   // The event key used for subscriptions.
   string key = 1;
 
-  google.protobuf.Any data = 2;
+  google.protobuf.Struct data = 2;
 }
 
 /**
