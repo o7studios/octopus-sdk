@@ -26,7 +26,7 @@ public abstract class ProtoStruct {
 
     public static <T> T deserialize(@NonNull Struct struct, @NonNull Class<T> clazz) throws IOException {
         var json = PRINTER.print(struct);
-        LOGGER.log(Level.INFO, "Deserialized '" + json + "' into '" + clazz + "'");
+        LOGGER.log(Level.FINE, "Deserialized '" + json + "' into '" + clazz + "'");
         return GSON.fromJson(json, clazz);
     }
 }
