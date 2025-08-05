@@ -21,26 +21,14 @@ service OctopusService {
   rpc CallEvent(Event) returns (Event);
 
   /**
-   * RegisterListener
-   *
-   * Registers an event handler.
-   */
-  rpc RegisterListener(EventHandler) returns (google.protobuf.Empty);
-
-  /**
-   * UnregisterListener
-   *
-   * Unregisters an event handler.
-   */
-  rpc UnregisterListener(EventHandler) returns (google.protobuf.Empty);
-
-  /**
    * Listen
    *
-   * Listens for events on the registered handlers.
+   * Listens for events on the registered handler.
    * Replies with a (possibly) modified response call (e.g. cancel).
    */
-  rpc Listen(stream EventCall) returns (stream EventCall);
+  rpc Listen(EventHandler) returns (stream EventCall);
+
+  rpc Callback(EventCallback) returns (google.protobuf.Empty);
 
   rpc GetEntry(EntryRequest) returns (EntryResponse);
 }

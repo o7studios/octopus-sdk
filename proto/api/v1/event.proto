@@ -22,10 +22,13 @@ import "google/protobuf/timestamp.proto";
  * - uuid: UUID of a Minecraft player or a database object
  */
 message Event {
-  // The event key used for subscriptions.
-  string key = 1;
+  // Unique Event id
+  string id = 1; // UUIDv4
 
-  google.protobuf.Struct data = 2;
+  // The event key used for subscriptions.
+  string key = 2;
+
+  google.protobuf.Struct data = 3;
 }
 
 /**
@@ -60,4 +63,10 @@ message EventCall {
   string identifier = 1;
 
   Event event = 2;
+}
+
+message EventCallback {
+  string identifier = 1;
+
+  EventCall call = 2;
 }
