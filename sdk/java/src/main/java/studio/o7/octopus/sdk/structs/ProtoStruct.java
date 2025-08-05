@@ -19,7 +19,7 @@ public abstract class ProtoStruct {
     public final Struct serialize() throws IOException {
         var builder = Struct.newBuilder();
         var json = GSON.toJson(this);
-        LOGGER.log(Level.INFO, "Serialized '" + this + "' into '" + json + "'");
+        LOGGER.log(Level.FINE, "Serialized '" + this + "' into '" + json + "'");
         PARSER.merge(json, builder);
         return builder.build();
     }
