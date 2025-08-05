@@ -1,4 +1,4 @@
-module github.com/o7studios/octopus-sdk/sdk/golang
+module github.com/o7studios/octopus-sdk
 
 go 1.24.4
 

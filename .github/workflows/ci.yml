@@ -54,15 +54,13 @@ jobs:
       - name: "🔧 Setup Go"
         uses: actions/setup-go@v5
         with:
-          go-version-file: sdk/golang/go.mod
-          cache-dependency-path: sdk/golang/go.sum
+          go-version-file: go.mod
 
       - name: "🔍 Run golangci-lint"
         uses: golangci/golangci-lint-action@v8
         with:
           version: latest
           args: --timeout 3m0s
-          working-directory: sdk/golang
 
   releaser:
     name: "🏁 Release"
@@ -88,8 +86,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           cache: true
-          go-version-file: sdk/golang/go.mod
-          cache-dependency-path: sdk/golang/go.sum
+          go-version-file: go.mod
 
       - name: ☕ Setup Java ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v4
