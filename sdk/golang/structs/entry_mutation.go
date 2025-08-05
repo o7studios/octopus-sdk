@@ -6,9 +6,9 @@ type MutationType string
 
 const (
 	Create     MutationType = "create"
-	Update                  = "update"
-	Delete                  = "delete"
-	SoftDelete              = "soft_delete"
+	Update     MutationType = "update"
+	Delete     MutationType = "delete"
+	SoftDelete MutationType = "soft_delete"
 )
 
 type EntryMutation struct {
