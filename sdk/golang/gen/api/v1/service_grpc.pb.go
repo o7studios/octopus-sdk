@@ -41,7 +41,7 @@ type OctopusServiceClient interface {
 	//
 	// Listens for events on the registered handler.
 	// Replies with a (possibly) modified response call (e.g. cancel).
-	Listen(ctx context.Context, in *EventHandler, opts ...grpc.CallOption) (grpc.ServerStreamingClient[EventCall], error)
+	Listen(ctx context.Context, in *EventHandler, opts ...grpc.CallOption) (grpc.ServerStreamingClient[Event], error)
 	Callback(ctx context.Context, in *EventCallback, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetEntry(ctx context.Context, in *EntryRequest, opts ...grpc.CallOption) (*EntryResponse, error)
 }
@@ -64,13 +64,13 @@ func (c *octopusServiceClient) CallEvent(ctx context.Context, in *Event, opts ..
 	return out, nil
 }
 
-func (c *octopusServiceClient) Listen(ctx context.Context, in *EventHandler, opts ...grpc.CallOption) (grpc.ServerStreamingClient[EventCall], error) {
+func (c *octopusServiceClient) Listen(ctx context.Context, in *EventHandler, opts ...grpc.CallOption) (grpc.ServerStreamingClient[Event], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	stream, err := c.cc.NewStream(ctx, &OctopusService_ServiceDesc.Streams[0], OctopusService_Listen_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[EventHandler, EventCall]{ClientStream: stream}
+	x := &grpc.GenericClientStream[EventHandler, Event]{ClientStream: stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -81,7 +81,7 @@ func (c *octopusServiceClient) Listen(ctx context.Context, in *EventHandler, opt
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type OctopusService_ListenClient = grpc.ServerStreamingClient[EventCall]
+type OctopusService_ListenClient = grpc.ServerStreamingClient[Event]
 
 func (c *octopusServiceClient) Callback(ctx context.Context, in *EventCallback, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
@@ -118,7 +118,7 @@ type OctopusServiceServer interface {
 	//
 	// Listens for events on the registered handler.
 	// Replies with a (possibly) modified response call (e.g. cancel).
-	Listen(*EventHandler, grpc.ServerStreamingServer[EventCall]) error
+	Listen(*EventHandler, grpc.ServerStreamingServer[Event]) error
 	Callback(context.Context, *EventCallback) (*emptypb.Empty, error)
 	GetEntry(context.Context, *EntryRequest) (*EntryResponse, error)
 	mustEmbedUnimplementedOctopusServiceServer()
@@ -134,7 +134,7 @@ type UnimplementedOctopusServiceServer struct{}
 func (UnimplementedOctopusServiceServer) CallEvent(context.Context, *Event) (*Event, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CallEvent not implemented")
 }
-func (UnimplementedOctopusServiceServer) Listen(*EventHandler, grpc.ServerStreamingServer[EventCall]) error {
+func (UnimplementedOctopusServiceServer) Listen(*EventHandler, grpc.ServerStreamingServer[Event]) error {
 	return status.Errorf(codes.Unimplemented, "method Listen not implemented")
 }
 func (UnimplementedOctopusServiceServer) Callback(context.Context, *EventCallback) (*emptypb.Empty, error) {
@@ -187,11 +187,11 @@ func _OctopusService_Listen_Handler(srv interface{}, stream grpc.ServerStream) e
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(OctopusServiceServer).Listen(m, &grpc.GenericServerStream[EventHandler, EventCall]{ServerStream: stream})
+	return srv.(OctopusServiceServer).Listen(m, &grpc.GenericServerStream[EventHandler, Event]{ServerStream: stream})
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type OctopusService_ListenServer = grpc.ServerStreamingServer[EventCall]
+type OctopusService_ListenServer = grpc.ServerStreamingServer[Event]
 
 func _OctopusService_Callback_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(EventCallback)
