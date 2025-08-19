@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+option go_package = "github.com/o7studios/octopus-sdk/sdk/golang/gen/api/v1;apiv1";
+
+package api.v1;
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+
+service Octopus {
+  rpc Get(GetRequest) returns (GetResponse);
+
+  rpc Call(Object) returns (Entry);
+
+  rpc Listen(stream ListenMessage) returns(stream EventCall);
+}
+
+message Object {
+  string key = 1;
+
+  google.protobuf.Value data = 2;
+
+  // Timestamp when the object expires and should no longer be visible to clients.
+  optional google.protobuf.Timestamp expired_at = 4;
+
+  // Timestamp when the objects entry should be deleted from the database.
+  optional google.protobuf.Timestamp deleted_at = 5;
+}
+
+message Entry {
+  Object object = 1;
+
+  // Timestamp when this entry was created.
+  google.protobuf.Timestamp created_at = 2;
+
+  int64 revision = 3;
+
+  // Unique identifier for this entry
+  string id = 4;
+}
+
+message GetRequest {
+  string key = 1;
+  optional string filter = 2;
+}
+
+message GetResponse {
+  repeated Entry entries = 1;
+}
+
+message ListenMessage {
+  oneof msg {
+    EventCall callback = 1;
+    ListenRegister register = 2;
+    ListenUnregister unregister = 3;
+  }
+}
+
+message EventCall {
+  Entry entry = 1;
+  string call_id = 2;
+}
+
+message ListenRegister {
+  string key = 1;
+  int32 priority = 2;
+}
+
+message ListenUnregister {
+  string key = 1;
+}

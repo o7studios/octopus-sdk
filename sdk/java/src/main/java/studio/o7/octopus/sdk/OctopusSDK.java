@@ -3,32 +3,32 @@ package studio.o7.octopus.sdk;
 import io.grpc.ManagedChannel;
 import io.grpc.okhttp.OkHttpChannelBuilder;
 import lombok.experimental.UtilityClass;
-import studio.o7.octopus.sdk.gen.api.v1.OctopusServiceGrpc;
+import studio.o7.octopus.sdk.gen.api.v1.OctopusGrpc;
 
 @UtilityClass
 public class OctopusSDK {
     private final System.Logger logger = System.getLogger("Octopus");
 
     private ManagedChannel channel;
-    private OctopusServiceGrpc.OctopusServiceStub stub;
-    private OctopusServiceGrpc.OctopusServiceBlockingStub blockingStub;
-    private OctopusServiceGrpc.OctopusServiceFutureStub futureStub;
+    private OctopusGrpc.OctopusStub stub;
+    private OctopusGrpc.OctopusBlockingStub blockingStub;
+    private OctopusGrpc.OctopusFutureStub futureStub;
 
-    public synchronized OctopusServiceGrpc.OctopusServiceStub stub() {
+    public synchronized OctopusGrpc.OctopusStub stub() {
         if (stub != null) return stub;
-        stub = OctopusServiceGrpc.newStub(connect());
+        stub = OctopusGrpc.newStub(connect());
         return stub;
     }
 
-    public synchronized OctopusServiceGrpc.OctopusServiceBlockingStub blockingStub() {
+    public synchronized OctopusGrpc.OctopusBlockingStub blockingStub() {
         if (blockingStub != null) return blockingStub;
-        blockingStub = OctopusServiceGrpc.newBlockingStub(connect());
+        blockingStub = OctopusGrpc.newBlockingStub(connect());
         return blockingStub;
     }
 
-    public synchronized OctopusServiceGrpc.OctopusServiceFutureStub futureStub() {
+    public synchronized OctopusGrpc.OctopusFutureStub futureStub() {
         if (futureStub != null) return futureStub;
-        futureStub = OctopusServiceGrpc.newFutureStub(connect());
+        futureStub = OctopusGrpc.newFutureStub(connect());
         return futureStub;
     }
 
