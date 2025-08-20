@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -20,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	Octopus_Get_FullMethodName    = "/api.v1.Octopus/Get"
+	Octopus_Write_FullMethodName  = "/api.v1.Octopus/Write"
 	Octopus_Call_FullMethodName   = "/api.v1.Octopus/Call"
 	Octopus_Listen_FullMethodName = "/api.v1.Octopus/Listen"
 )
@@ -33,6 +35,9 @@ type OctopusClient interface {
 	// key pattern. Can optionally include expired objects and
 	// filter by revision creation time.
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
+	// *
+	// Stores an object on key with new revision in the database.
+	Write(ctx context.Context, in *Object, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// *
 	// Stores an object on key with new revision in the database
 	// and returns the stored version, including the revision
@@ -81,6 +86,16 @@ func (c *octopusClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.Ca
 	return out, nil
 }
 
+func (c *octopusClient) Write(ctx context.Context, in *Object, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Octopus_Write_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *octopusClient) Call(ctx context.Context, in *Object, opts ...grpc.CallOption) (*Entry, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Entry)
@@ -113,6 +128,9 @@ type OctopusServer interface {
 	// key pattern. Can optionally include expired objects and
 	// filter by revision creation time.
 	Get(context.Context, *GetRequest) (*GetResponse, error)
+	// *
+	// Stores an object on key with new revision in the database.
+	Write(context.Context, *Object) (*emptypb.Empty, error)
 	// *
 	// Stores an object on key with new revision in the database
 	// and returns the stored version, including the revision
@@ -153,6 +171,9 @@ type UnimplementedOctopusServer struct{}
 
 func (UnimplementedOctopusServer) Get(context.Context, *GetRequest) (*GetResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+}
+func (UnimplementedOctopusServer) Write(context.Context, *Object) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Write not implemented")
 }
 func (UnimplementedOctopusServer) Call(context.Context, *Object) (*Entry, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Call not implemented")
@@ -199,6 +220,24 @@ func _Octopus_Get_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Octopus_Write_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Object)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OctopusServer).Write(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Octopus_Write_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OctopusServer).Write(ctx, req.(*Object))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Octopus_Call_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Object)
 	if err := dec(in); err != nil {
@@ -234,6 +273,10 @@ var Octopus_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Get",
 			Handler:    _Octopus_Get_Handler,
+		},
+		{
+			MethodName: "Write",
+			Handler:    _Octopus_Write_Handler,
 		},
 		{
 			MethodName: "Call",
