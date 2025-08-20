@@ -9,64 +9,134 @@ import "google/protobuf/timestamp.proto";
 
 
 service Octopus {
+  /**
+   * Retrieves existing entries from the database matching a
+   * key pattern. Can optionally include expired objects and
+   * filter by revision creation time.
+   */
   rpc Get(GetRequest) returns (GetResponse);
 
+  /**
+   * Stores an object on key with new revision in the database
+   * and returns the stored version, including the revision
+   * and ID.
+   */
   rpc Call(Object) returns (Entry);
 
+  /**
+   * Bidirectional stream for real-time updates. Clients
+   * register for key-patterns (ListenRegister) and receive
+   * events (EventCall).
+   *
+   * Step 1: Registration
+   *
+   * The client must first send a `ListenRegister` message
+   * to specify which key-pattern to listen to.
+   *
+   * Step 2: Event Reception
+   *
+   * After registration, the server sends `EventCall` messages
+   * for objects matching the registered key-pattern.
+   *
+   * Rules:
+   *
+   * 1. Only one registration per stream is allowed.
+   *
+   * 2. After registration, the server sends `EventCall` messages
+   * which have to be sent back for acknowledgement
+   * (and possibly modification).
+   */
   rpc Listen(stream ListenMessage) returns(stream EventCall);
 }
 
+/**
+ * Represents a flexible data object.
+ */
 message Object {
+  // Unique key identifying the object.
   string key = 1;
 
-  google.protobuf.Value data = 2;
+  // Flexible JSON-like data structure.
+  google.protobuf.Struct data = 2;
 
-  // Timestamp when the object expires and should no longer be visible to clients.
+  // Timestamp when the object should no longer be visible by default.
   optional google.protobuf.Timestamp expired_at = 4;
 
-  // Timestamp when the objects entry should be deleted from the database.
+  // Timestamp when the object should be permanently deleted.
   optional google.protobuf.Timestamp deleted_at = 5;
 }
 
+/**
+ * A versioned object with metadata from database.
+ */
 message Entry {
+  // The underlying object.
   Object object = 1;
 
-  // Timestamp when this entry was created.
+  // Entry creation timestamp.
   google.protobuf.Timestamp created_at = 2;
 
+  // Revision number, incremented on every update.
   int64 revision = 3;
 
-  // Unique identifier for this entry
+  // Unique identifier for this entry.
   string id = 4;
 }
 
+/**
+ * Filters and options for `Get` RPC.
+ */
 message GetRequest {
-  string key = 1;
-  optional string filter = 2;
+  // Pattern to match keys (supports wildcards).
+  string key_pattern = 1;
+
+  // Whether to include expired objects.
+  optional bool include_expired = 2;
+
+  // Start timestamp to filter creation time.
+  optional google.protobuf.Timestamp created_at_range_start = 3;
+
+  // End timestamp to filter creation time.
+  optional google.protobuf.Timestamp created_at_range_end = 4;
 }
 
+/**
+ * Result of `Get` RPC.
+ */
 message GetResponse {
+  // List of found entries including revision, ID and timestamps.
   repeated Entry entries = 1;
 }
 
+/**
+ * Message type for the listen stream.
+ */
 message ListenMessage {
   oneof msg {
     EventCall callback = 1;
     ListenRegister register = 2;
-    ListenUnregister unregister = 3;
   }
 }
 
+/**
+ * Represents a event in the stream.
+ */
 message EventCall {
-  Entry entry = 1;
+  // The affected object.
+  Object object = 1;
+
+  // Unique ID for this event call (useful for tracking).
   string call_id = 2;
 }
 
+/**
+ * Registers the stream for real-time updates on specific
+ * key pattern.
+ */
 message ListenRegister {
-  string key = 1;
-  int32 priority = 2;
-}
+  // Key pattern the client wants to listen to.
+  string key_pattern = 1;
 
-message ListenUnregister {
-  string key = 1;
+  // Priority of the registration (e.g. determines event order; lower is later).
+  int32 priority = 2;
 }

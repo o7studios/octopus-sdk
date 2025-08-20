@@ -28,8 +28,38 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OctopusClient interface {
+	// *
+	// Retrieves existing entries from the database matching a
+	// key pattern. Can optionally include expired objects and
+	// filter by revision creation time.
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
+	// *
+	// Stores an object on key with new revision in the database
+	// and returns the stored version, including the revision
+	// and ID.
 	Call(ctx context.Context, in *Object, opts ...grpc.CallOption) (*Entry, error)
+	// *
+	// Bidirectional stream for real-time updates. Clients
+	// register for key-patterns (ListenRegister) and receive
+	// events (EventCall).
+	//
+	// Step 1: Registration
+	//
+	// The client must first send a `ListenRegister` message
+	// to specify which key-pattern to listen to.
+	//
+	// Step 2: Event Reception
+	//
+	// After registration, the server sends `EventCall` messages
+	// for objects matching the registered key-pattern.
+	//
+	// Rules:
+	//
+	// 1. Only one registration per stream is allowed.
+	//
+	// 2. After registration, the server sends `EventCall` messages
+	// which have to be sent back for acknowledgement
+	// (and possibly modification).
 	Listen(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[ListenMessage, EventCall], error)
 }
 
@@ -78,8 +108,38 @@ type Octopus_ListenClient = grpc.BidiStreamingClient[ListenMessage, EventCall]
 // All implementations must embed UnimplementedOctopusServer
 // for forward compatibility.
 type OctopusServer interface {
+	// *
+	// Retrieves existing entries from the database matching a
+	// key pattern. Can optionally include expired objects and
+	// filter by revision creation time.
 	Get(context.Context, *GetRequest) (*GetResponse, error)
+	// *
+	// Stores an object on key with new revision in the database
+	// and returns the stored version, including the revision
+	// and ID.
 	Call(context.Context, *Object) (*Entry, error)
+	// *
+	// Bidirectional stream for real-time updates. Clients
+	// register for key-patterns (ListenRegister) and receive
+	// events (EventCall).
+	//
+	// Step 1: Registration
+	//
+	// The client must first send a `ListenRegister` message
+	// to specify which key-pattern to listen to.
+	//
+	// Step 2: Event Reception
+	//
+	// After registration, the server sends `EventCall` messages
+	// for objects matching the registered key-pattern.
+	//
+	// Rules:
+	//
+	// 1. Only one registration per stream is allowed.
+	//
+	// 2. After registration, the server sends `EventCall` messages
+	// which have to be sent back for acknowledgement
+	// (and possibly modification).
 	Listen(grpc.BidiStreamingServer[ListenMessage, EventCall]) error
 	mustEmbedUnimplementedOctopusServer()
 }
