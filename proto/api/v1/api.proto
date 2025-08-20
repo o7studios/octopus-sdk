@@ -143,7 +143,10 @@ message EventCall {
  * key pattern.
  */
 message ListenRegister {
-  // Key pattern the client wants to listen to.
+  // Pattern to match keys. Supports wildcards:
+  //   *  — matches exactly one token (between dots), e.g., "foo.*.bar" matches "foo.x.bar" but not "foo.x.y.bar"
+  //   >  — matches one or more tokens until the end, e.g., "foo.>" matches "foo", "foo.bar", "foo.bar.baz", etc.
+  // Multiple wildcards can be used in a single pattern. Tokens are dot-separated.
   string key_pattern = 1;
 
   // Priority of the registration (e.g. determines event order; lower is later).
