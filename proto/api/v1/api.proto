@@ -5,6 +5,7 @@ option go_package = "github.com/o7studios/octopus-sdk/sdk/golang/gen/api/v1;apiv
 package api.v1;
 
 import "google/protobuf/struct.proto";
+import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 
@@ -15,6 +16,11 @@ service Octopus {
    * filter by revision creation time.
    */
   rpc Get(GetRequest) returns (GetResponse);
+
+  /**
+   * Stores an object on key with new revision in the database.
+   */
+  rpc Write(Object) returns (google.protobuf.Empty);
 
   /**
    * Stores an object on key with new revision in the database
