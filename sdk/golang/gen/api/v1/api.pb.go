@@ -176,7 +176,11 @@ func (x *Entry) GetId() string {
 // Filters and options for `Get` RPC.
 type GetRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Pattern to match keys (supports wildcards).
+	// Pattern to match keys. Supports wildcards:
+	//   - — matches exactly one token (between dots), e.g., "foo.*.bar" matches "foo.x.bar" but not "foo.x.y.bar"
+	//     >  — matches one or more tokens until the end, e.g., "foo.>" matches "foo", "foo.bar", "foo.bar.baz", etc.
+	//
+	// Multiple wildcards can be used in a single pattern. Tokens are dot-separated.
 	KeyPattern string `protobuf:"bytes,1,opt,name=key_pattern,json=keyPattern,proto3" json:"key_pattern,omitempty"`
 	// Whether to include expired objects.
 	IncludeExpired *bool `protobuf:"varint,2,opt,name=include_expired,json=includeExpired,proto3,oneof" json:"include_expired,omitempty"`
@@ -438,7 +442,11 @@ func (x *EventCall) GetCallId() string {
 // key pattern.
 type ListenRegister struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Key pattern the client wants to listen to.
+	// Pattern to match keys. Supports wildcards:
+	//   - — matches exactly one token (between dots), e.g., "foo.*.bar" matches "foo.x.bar" but not "foo.x.y.bar"
+	//     >  — matches one or more tokens until the end, e.g., "foo.>" matches "foo", "foo.bar", "foo.bar.baz", etc.
+	//
+	// Multiple wildcards can be used in a single pattern. Tokens are dot-separated.
 	KeyPattern string `protobuf:"bytes,1,opt,name=key_pattern,json=keyPattern,proto3" json:"key_pattern,omitempty"`
 	// Priority of the registration (e.g. determines event order; lower is later).
 	Priority      int32 `protobuf:"varint,2,opt,name=priority,proto3" json:"priority,omitempty"`
