@@ -21,7 +21,7 @@ Please use it for being able to tell "It works on my machine".
 - Select `From VCS Project`
 - Select and connect with `Docker`
 - Select `IntelliJ IDEA`
-- Enter `Git Repository`: `https://github.com/o7studios/cheetah`
+- Enter `Git Repository`: `https://github.com/o7studios/octopus-sdk`
 - Select `Detection for devcontainer.json file` `Automatic`
 - Press `Build Container and Continue`
 
