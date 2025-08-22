@@ -107,6 +107,9 @@ message GetRequest {
 
   // End timestamp to filter creation time.
   optional google.protobuf.Timestamp created_at_range_end = 4;
+
+  // Filter by json in data in MongoDB filter similar pattern
+  optional string data_filter = 5;
 }
 
 /**
