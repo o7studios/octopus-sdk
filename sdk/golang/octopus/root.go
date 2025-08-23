@@ -11,6 +11,7 @@ import (
 	apiv1 "github.com/o7studios/octopus-sdk/sdk/golang/gen/api/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type SDK struct {
@@ -76,7 +77,7 @@ func New(host string, port int) (*SDK, error) {
 			return nil, err
 		}
 	} else {
-		if connection, err := grpc.NewClient(target); err == nil {
+		if connection, err := grpc.NewClient(target, grpc.WithTransportCredentials(insecure.NewCredentials())); err == nil {
 			conn = connection
 		} else {
 			return nil, err
