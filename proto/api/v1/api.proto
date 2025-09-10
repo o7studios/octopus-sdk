@@ -7,6 +7,8 @@ package api.v1;
 import "google/protobuf/struct.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+import "buf/validate/validate.proto";
 
 
 service Octopus {
@@ -15,19 +17,33 @@ service Octopus {
    * key pattern. Can optionally include expired objects and
    * filter by revision creation time.
    */
-  rpc Get(GetRequest) returns (GetResponse);
+  rpc Get(GetRequest) returns (GetResponse) {
+    option (google.api.http) = {
+      get: "/v1/entries"
+    };
+  }
 
   /**
    * Stores an object on key with new revision in the database.
    */
-  rpc Write(Object) returns (google.protobuf.Empty);
+  rpc Write(Object) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/objects"
+      body: "*"
+    };
+  }
 
   /**
    * Stores an object on key with new revision in the database
    * and returns the stored version, including the revision
    * and ID.
    */
-  rpc Call(Object) returns (Entry);
+  rpc Call(Object) returns (Entry) {
+    option (google.api.http) = {
+      post: "/v1/entries"
+      body: "*"
+    };
+  }
 
   /**
    * Bidirectional stream for real-time updates. Clients
@@ -60,7 +76,7 @@ service Octopus {
  */
 message Object {
   // Unique key identifying the object.
-  string key = 1;
+  string key = 1 [(buf.validate.field).string.min_len = 1];
 
   // Flexible JSON-like data structure.
   google.protobuf.Struct data = 2;
@@ -138,7 +154,7 @@ message EventCall {
   Object object = 1;
 
   // Unique ID for this event call (useful for tracking).
-  string call_id = 2;
+  string call_id = 2 [(buf.validate.field).string.min_len = 1];
 }
 
 /**
@@ -150,7 +166,7 @@ message ListenRegister {
   //   *  — matches exactly one token (between dots), e.g., "foo.*.bar" matches "foo.x.bar" but not "foo.x.y.bar"
   //   >  — matches one or more tokens until the end, e.g., "foo.>" matches "foo", "foo.bar", "foo.bar.baz", etc.
   // Multiple wildcards can be used in a single pattern. Tokens are dot-separated.
-  string key_pattern = 1;
+  string key_pattern = 1 [(buf.validate.field).string.min_len = 1];
 
   // Priority of the registration (e.g. determines event order; lower is later).
   int32 priority = 2;
