@@ -1,0 +1,278 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "api/v1/api.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "Octopus"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/entries": {
+      "get": {
+        "summary": "*\nRetrieves existing entries from the database matching a\nkey pattern. Can optionally include expired objects and\nfilter by revision creation time.",
+        "operationId": "Octopus_Get",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "keyPattern",
+            "description": "Pattern to match keys. Supports wildcards:\n  *  — matches exactly one token (between dots), e.g., \"foo.*.bar\" matches \"foo.x.bar\" but not \"foo.x.y.bar\"\n  \u003e  — matches one or more tokens until the end, e.g., \"foo.\u003e\" matches \"foo\", \"foo.bar\", \"foo.bar.baz\", etc.\nMultiple wildcards can be used in a single pattern. Tokens are dot-separated.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "includeExpired",
+            "description": "Whether to include expired objects.",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "createdAtRangeStart",
+            "description": "Start timestamp to filter creation time.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "createdAtRangeEnd",
+            "description": "End timestamp to filter creation time.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "dataFilter",
+            "description": "Filter by json in data in MongoDB filter similar pattern",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Octopus"
+        ]
+      },
+      "post": {
+        "summary": "*\nStores an object on key with new revision in the database\nand returns the stored version, including the revision\nand ID.",
+        "operationId": "Octopus_Call",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Entry"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "*\nRepresents a flexible data object.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1Object"
+            }
+          }
+        ],
+        "tags": [
+          "Octopus"
+        ]
+      }
+    },
+    "/v1/objects": {
+      "post": {
+        "summary": "*\nStores an object on key with new revision in the database.",
+        "operationId": "Octopus_Write",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "*\nRepresents a flexible data object.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1Object"
+            }
+          }
+        ],
+        "tags": [
+          "Octopus"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "protobufNullValue": {
+      "type": "string",
+      "enum": [
+        "NULL_VALUE"
+      ],
+      "default": "NULL_VALUE",
+      "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\nThe JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1Entry": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "$ref": "#/definitions/v1Object",
+          "description": "The underlying object."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Entry creation timestamp."
+        },
+        "revision": {
+          "type": "string",
+          "format": "int64",
+          "description": "Revision number, incremented on every update."
+        },
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for this entry."
+        }
+      },
+      "description": "*\nA versioned object with metadata from database."
+    },
+    "v1EventCall": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "$ref": "#/definitions/v1Object",
+          "description": "The affected object."
+        },
+        "callId": {
+          "type": "string",
+          "description": "Unique ID for this event call (useful for tracking)."
+        }
+      },
+      "description": "*\nRepresents a event in the stream."
+    },
+    "v1GetResponse": {
+      "type": "object",
+      "properties": {
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Entry"
+          },
+          "description": "List of found entries including revision, ID and timestamps."
+        }
+      },
+      "description": "*\nResult of `Get` RPC."
+    },
+    "v1ListenRegister": {
+      "type": "object",
+      "properties": {
+        "keyPattern": {
+          "type": "string",
+          "description": "Pattern to match keys. Supports wildcards:\n  *  — matches exactly one token (between dots), e.g., \"foo.*.bar\" matches \"foo.x.bar\" but not \"foo.x.y.bar\"\n  \u003e  — matches one or more tokens until the end, e.g., \"foo.\u003e\" matches \"foo\", \"foo.bar\", \"foo.bar.baz\", etc.\nMultiple wildcards can be used in a single pattern. Tokens are dot-separated."
+        },
+        "priority": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Priority of the registration (e.g. determines event order; lower is later)."
+        }
+      },
+      "description": "*\nRegisters the stream for real-time updates on specific\nkey pattern."
+    },
+    "v1Object": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "Unique key identifying the object."
+        },
+        "data": {
+          "type": "object",
+          "description": "Flexible JSON-like data structure."
+        },
+        "expiredAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the object should no longer be visible by default."
+        },
+        "deletedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the object should be permanently deleted."
+        }
+      },
+      "description": "*\nRepresents a flexible data object."
+    }
+  }
+}
