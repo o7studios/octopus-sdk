@@ -28,3 +28,10 @@ plugins:
     out: ./sdk/js/gen
   - remote: buf.build/grpc/node:v1.13.0
     out: ./sdk/js/gen
+
+  # OpenAPI (Swagger)
+  - remote: buf.build/grpc-ecosystem/openapiv2:v2.27.2
+    out: ./sdk/openapi
+    opt:
+      - allow_merge=true
+      - merge_file_name=octopus
