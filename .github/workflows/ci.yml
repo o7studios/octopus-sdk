@@ -52,7 +52,7 @@ jobs:
         run: make generate-proto
 
       - name: "🔧 Setup Go"
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
           cache-dependency-path: go.sum
@@ -84,7 +84,7 @@ jobs:
         run: make generate-proto
 
       - name: "🔧 Setup Go (with Cache)"
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           cache: true
           go-version-file: go.mod
