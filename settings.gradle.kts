@@ -5,6 +5,7 @@ dependencyResolutionManagement {
         create("libs") {
             version("grpc", "1.75.0")
             version("googleProtobuf", "4.32.0")
+            version("googleProto", "2.61.1")
             version("javax", "1.3.2")
             version ("gson", "2.13.1")
 
@@ -18,6 +19,8 @@ dependencyResolutionManagement {
 
             library("protobuf-java", "com.google.protobuf", "protobuf-java").versionRef("googleProtobuf")
             library("protobuf-java-util", "com.google.protobuf", "protobuf-java-util").versionRef("googleProtobuf")
+
+            library("googleProto", "com.google.api.grpc", "proto-google-common-protos").versionRef("googleProto")
 
             library("gson", "com.google.code.gson", "gson").versionRef("gson")
 

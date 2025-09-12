@@ -6,6 +6,7 @@ dependencies {
     api(libs.gson)
     compileOnlyApi(libs.bundles.grpc)
     compileOnlyApi(libs.bundles.googleProtobuf)
+    compileOnlyApi(libs.googleProto)
     compileOnlyApi(libs.javax)
 }
 

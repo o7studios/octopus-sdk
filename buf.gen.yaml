@@ -1,11 +1,5 @@
 version: v2
 
-managed:
-  enabled: true
-  override:
-    - file_option: java_package_prefix
-      value: studio.o7.octopus.sdk.gen
-
 plugins:
   # Java
   - remote: buf.build/protocolbuffers/java:v25.3

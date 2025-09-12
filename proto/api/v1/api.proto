@@ -1,6 +1,8 @@
 syntax = "proto3";
 
 option go_package = "github.com/o7studios/octopus-sdk/sdk/golang/gen/api/v1;apiv1";
+option java_package = "studio.o7.octopus.sdk.gen.api.v1";
+option java_multiple_files = true;
 
 package api.v1;
 
@@ -8,7 +10,6 @@ import "google/protobuf/struct.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/api/annotations.proto";
-import "buf/validate/validate.proto";
 
 
 service Octopus {
@@ -76,7 +77,7 @@ service Octopus {
  */
 message Object {
   // Unique key identifying the object.
-  string key = 1 [(buf.validate.field).string.min_len = 1];
+  string key = 1;
 
   // Flexible JSON-like data structure.
   google.protobuf.Struct data = 2;
@@ -154,7 +155,7 @@ message EventCall {
   Object object = 1;
 
   // Unique ID for this event call (useful for tracking).
-  string call_id = 2 [(buf.validate.field).string.min_len = 1];
+  string call_id = 2;
 }
 
 /**
@@ -166,7 +167,7 @@ message ListenRegister {
   //   *  — matches exactly one token (between dots), e.g., "foo.*.bar" matches "foo.x.bar" but not "foo.x.y.bar"
   //   >  — matches one or more tokens until the end, e.g., "foo.>" matches "foo", "foo.bar", "foo.bar.baz", etc.
   // Multiple wildcards can be used in a single pattern. Tokens are dot-separated.
-  string key_pattern = 1 [(buf.validate.field).string.min_len = 1];
+  string key_pattern = 1;
 
   // Priority of the registration (e.g. determines event order; lower is later).
   int32 priority = 2;
