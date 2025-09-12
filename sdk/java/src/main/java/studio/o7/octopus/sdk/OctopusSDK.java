@@ -1,22 +1,13 @@
 package studio.o7.octopus.sdk;
 
 import io.grpc.ManagedChannel;
-import io.grpc.okhttp.OkHttpChannelBuilder;
+import io.grpc.netty.GrpcSslContexts;
+import io.grpc.netty.NettyChannelBuilder;
 import lombok.experimental.UtilityClass;
 import studio.o7.octopus.sdk.gen.api.v1.OctopusGrpc;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManagerFactory;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyFactory;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.Base64;
 
 @UtilityClass
 public class OctopusSDK {
@@ -65,7 +56,7 @@ public class OctopusSDK {
         String env = System.getProperty("octopus.env", System.getenv("OCTOPUS_ENVIRONMENT"));
 
         if ("dev".equals(env)) {
-            channel = OkHttpChannelBuilder.forAddress(host, port)
+            channel = NettyChannelBuilder.forAddress(host, port)
                     .usePlaintext()
                     .build();
         } else {
@@ -80,10 +71,16 @@ public class OctopusSDK {
                     );
                 }
 
-                SSLContext sslContext = buildSslContext(clientCert, clientKey, caCert);
+                var sslContext = GrpcSslContexts.forClient()
+                        .trustManager(new ByteArrayInputStream(caCert.getBytes(StandardCharsets.UTF_8)))
+                        .keyManager(
+                                new ByteArrayInputStream(clientCert.getBytes(StandardCharsets.UTF_8)),
+                                new ByteArrayInputStream(clientKey.getBytes(StandardCharsets.UTF_8))
+                        )
+                        .build();
 
-                channel = OkHttpChannelBuilder.forAddress(host, port)
-                        .sslSocketFactory(sslContext.getSocketFactory())
+                channel = NettyChannelBuilder.forAddress(host, port)
+                        .sslContext(sslContext)
                         .build();
             } catch (Exception exception) {
                 throw new RuntimeException("Failed to setup gRPC TLS channel", exception);
@@ -100,46 +97,5 @@ public class OctopusSDK {
         stub = null;
         blockingStub = null;
         futureStub = null;
-    }
-
-    private SSLContext buildSslContext(String clientCertPem, String clientKeyPem, String caCertPem) throws Exception {
-        // CA
-        CertificateFactory cf = CertificateFactory.getInstance("X.509");
-        X509Certificate caCert = (X509Certificate) cf.generateCertificate(
-                new ByteArrayInputStream(caCertPem.getBytes(StandardCharsets.UTF_8))
-        );
-
-        KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-        trustStore.load(null);
-        trustStore.setCertificateEntry("caCert", caCert);
-
-        TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        tmf.init(trustStore);
-
-        // Client Key/Cert
-        X509Certificate clientCert = (X509Certificate) cf.generateCertificate(
-                new ByteArrayInputStream(clientCertPem.getBytes(StandardCharsets.UTF_8))
-        );
-
-        String privateKeyPEM = clientKeyPem
-                .replace("-----BEGIN PRIVATE KEY-----", "")
-                .replace("-----END PRIVATE KEY-----", "")
-                .replaceAll("\\s", "");
-        byte[] keyBytes = Base64.getDecoder().decode(privateKeyPEM);
-
-        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
-        PrivateKey privateKey = KeyFactory.getInstance("RSA").generatePrivate(keySpec);
-
-        KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-        keyStore.load(null);
-        keyStore.setKeyEntry("client", privateKey, "".toCharArray(), new java.security.cert.Certificate[]{clientCert});
-
-        KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-        kmf.init(keyStore, "".toCharArray());
-
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
-
-        return sslContext;
     }
 }

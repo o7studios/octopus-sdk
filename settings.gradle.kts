@@ -10,7 +10,7 @@ dependencyResolutionManagement {
 
             library("javax", "javax.annotation", "javax.annotation-api").versionRef("javax")
 
-            library("grpc-okhttp", "io.grpc", "grpc-okhttp").versionRef("grpc")
+            library("grpc-netty", "io.grpc", "grpc-netty").versionRef("grpc")
             library("grpc-protobuf", "io.grpc", "grpc-protobuf").versionRef("grpc")
             library("grpc-stub", "io.grpc", "grpc-stub").versionRef("grpc")
             library("grpc-core", "io.grpc", "grpc-core").versionRef("grpc")
@@ -27,7 +27,7 @@ dependencyResolutionManagement {
             ))
 
             bundle("grpc", listOf(
-                "grpc-okhttp",
+                "grpc-netty",
                 "grpc-core",
                 "grpc-protobuf",
                 "grpc-stub",
