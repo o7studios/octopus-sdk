@@ -4,7 +4,7 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
             version("grpc", "1.75.0")
-            version("googleProtobuf", "4.32.0")
+            version("googleProtobuf", "4.32.1")
             version("googleProto", "2.61.1")
             version("javax", "1.3.2")
             version ("gson", "2.13.1")
