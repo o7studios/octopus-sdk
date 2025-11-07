@@ -96,6 +96,73 @@ jobs:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
 
+      - name: "🔧 Setup Node"
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: "Prepare npm auth"
+        run: |
+          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+            echo "NPM_TOKEN secret is not set. Skipping npm publish."
+            exit 1
+          fi
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
+      - name: "Extract version from tag"
+        id: version
+        run: |
+          RAW_TAG="${GITHUB_REF##*/}"
+          VERSION="${RAW_TAG#v}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: "Prepare npm package.json for sdk/js"
+        working-directory: sdk/js
+        run: |
+          cat > package.json <<EOF
+          {
+            "name": "@o7studios/octopus-sdk",
+            "version": "${{ steps.version.outputs.version }}",
+            "description": "Octopus JavaScript SDK",
+            "type": "module",
+            "main": "./gen/index.js",
+            "types": "./gen/index.d.ts",
+            "files": [
+              "gen"
+            ],
+            "scripts": {
+              "build": "echo 'No build step'",
+              "prepublishOnly": "npm run build"
+            },
+            "author": "Julian Siebert <julian.siebert@o7.studio>",
+            "license": "GPL-3.0",
+            "repository": {
+              "type": "git",
+              "url": "https://github.com/o7studios/octopus-sdk.git"
+            },
+            "homepage": "https://o7.studio",
+            "bugs": {
+              "url": "https://github.com/o7studios/octopus-sdk/issues"
+            },
+            "publishConfig": {
+              "access": "public"
+            }
+          }
+          EOF
+
+      - name: "Check package contents"
+        working-directory: sdk/js
+        run: |
+          npm pack --dry-run
+
+      - name: "🚀 Publish to npm"
+        working-directory: sdk/js
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm publish --access public
+
       - name: ⚡ Setup Gradle with Cache
         uses: gradle/actions/setup-gradle@v4
 
