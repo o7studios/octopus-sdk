@@ -1,0 +1,32 @@
+{
+  "name": "@o7studios/octopus-sdk",
+  "version": "0.0.1",
+  "description": "SDK for o7studios product Octopus",
+  "type": "module",
+  "main": "./gen/api/v1/api_grpc_pb.js",
+  "types": "./gen/api/v1/api_pb.d.ts",
+  "files": [
+    "gen"
+  ],
+  "scripts": {
+    "build": "echo 'No build step'",
+    "prepublishOnly": "npm run build"
+  },
+  "author": "Julian Siebert <julian.siebert@o7.studio>",
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/o7studios/octopus-sdk.git"
+  },
+  "homepage": "https://o7.studio",
+  "bugs": {
+    "url": "https://github.com/o7studios/octopus-sdk/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@bufbuild/protobuf": "^2.10.0",
+    "google-protobuf": "^4.0.0"
+  }
+}
