@@ -97,9 +97,9 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
 
       - name: "🔧 Setup Node"
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
 
       - name: "Prepare npm auth"
@@ -117,44 +117,12 @@ jobs:
           VERSION="${RAW_TAG#v}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: "Prepare npm package.json for sdk/js"
+      - run: npm version $VERSION
         working-directory: sdk/js
-        run: |
-          cat > package.json <<EOF
-          {
-            "name": "@o7studios/octopus-sdk",
-            "version": "${{ steps.version.outputs.version }}",
-            "description": "Octopus JavaScript SDK",
-            "type": "module",
-            "main": "./gen/index.js",
-            "types": "./gen/index.d.ts",
-            "files": [
-              "gen"
-            ],
-            "scripts": {
-              "build": "echo 'No build step'",
-              "prepublishOnly": "npm run build"
-            },
-            "author": "Julian Siebert <julian.siebert@o7.studio>",
-            "license": "GPL-3.0",
-            "repository": {
-              "type": "git",
-              "url": "https://github.com/o7studios/octopus-sdk.git"
-            },
-            "homepage": "https://o7.studio",
-            "bugs": {
-              "url": "https://github.com/o7studios/octopus-sdk/issues"
-            },
-            "publishConfig": {
-              "access": "public"
-            }
-          }
-          EOF
-
-      - name: "Check package contents"
+      - run: npm ci
         working-directory: sdk/js
-        run: |
-          npm pack --dry-run
+      - run: npm publish --dry-run
+        working-directory: sdk/js
 
       - name: "🚀 Publish to npm"
         working-directory: sdk/js
