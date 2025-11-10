@@ -132,7 +132,7 @@ jobs:
           npm publish --access public
 
       - name: ⚡ Setup Gradle with Cache
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: "🚀 Publish to Maven Central"
         env:
