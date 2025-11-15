@@ -117,8 +117,11 @@ jobs:
           VERSION="${RAW_TAG#v}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - run: npm version $VERSION
+      - name: "Set npm version from tag"
         working-directory: sdk/js
+        run: |
+          npm version ${{ steps.version.outputs.version }} --no-git-tag-version
+
       - run: npm ci
         working-directory: sdk/js
       - run: npm publish --dry-run
