@@ -1,11 +1,7 @@
 version: v2
 
-# Managed mode for google/api imports
 managed:
   enabled: true
-  override:
-    - file_option: go_package_prefix
-      value: github.com/o7studios/octopus-sdk/sdk/golang/gen
 
 plugins:
   # Java
@@ -27,8 +23,6 @@ plugins:
   # JavaScript / TypeScript
   - remote: buf.build/bufbuild/es:v2.10.1
     out: ./sdk/js/gen
-    opt:
-      - target=ts
 
   # OpenAPI (Swagger)
   - remote: buf.build/grpc-ecosystem/openapiv2:v2.27.2
