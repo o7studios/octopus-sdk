@@ -7,7 +7,7 @@
 package apiv1
 
 import (
-	_ "github.com/o7studios/octopus-sdk/sdk/golang/gen/google/api"
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
