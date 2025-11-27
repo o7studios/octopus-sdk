@@ -71,6 +71,21 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "paginator.pageSize",
+            "description": "Number of items to return.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "paginator.cursor",
+            "description": "Cursor for efficient pagination. First page is empty.",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -231,6 +246,10 @@
             "$ref": "#/definitions/v1Entry"
           },
           "description": "List of found entries including revision, ID and timestamps."
+        },
+        "nextCursor": {
+          "type": "string",
+          "description": "Cursor for next page. Empty means \"no more results\"."
         }
       },
       "description": "*\nResult of `Get` RPC."
@@ -273,6 +292,21 @@
         }
       },
       "description": "*\nRepresents a flexible data object."
+    },
+    "v1Paginator": {
+      "type": "object",
+      "properties": {
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Number of items to return."
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Cursor for efficient pagination. First page is empty."
+        }
+      },
+      "description": "*\nPaginator for database entry cursor-pagination."
     }
   }
 }
