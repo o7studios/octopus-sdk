@@ -127,6 +127,20 @@ message GetRequest {
 
   // Filter by json in data in MongoDB filter similar pattern
   optional string data_filter = 5;
+
+  // Entry paginator
+  optional Paginator paginator = 6;
+}
+
+/**
+ * Paginator for database entry cursor-pagination.
+ */
+message Paginator {
+  // Number of items to return.
+  int32 page_size = 1;
+
+  // Cursor for efficient pagination. First page is empty.
+  string cursor = 2;
 }
 
 /**
@@ -135,6 +149,9 @@ message GetRequest {
 message GetResponse {
   // List of found entries including revision, ID and timestamps.
   repeated Entry entries = 1;
+
+  // Cursor for next page. Empty means "no more results".
+  string next_cursor = 2;
 }
 
 /**
