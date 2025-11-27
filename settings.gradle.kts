@@ -3,7 +3,7 @@ rootProject.name = "octopus-sdk"
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            version("grpc", "1.75.0")
+            version("grpc", "1.77.0")
             version("googleProtobuf", "4.32.0")
             version("googleProto", "2.61.1")
             version("javax", "1.3.2")
