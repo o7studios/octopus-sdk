@@ -30,7 +30,7 @@ jobs:
         run: make generate-proto
 
       - name: Auto-commit and push changes
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "🤖 Generate protobufs"
           file_pattern: "sdk/**/*"
