@@ -14,7 +14,7 @@
   },
   "features": {
     "ghcr.io/devcontainers/features/git" : {},
-    "ghcr.io/devcontainers/features/go:1": {"version": "1.25.1"},
+    "ghcr.io/devcontainers/features/go:1": {"version": "1.25.5"},
     "ghcr.io/devcontainers/features/java:1": {"version": "25", "installGradle": true},
     "ghcr.io/devcontainers/features/node:1": {},
     "ghcr.io/mrsimonemms/devcontainers/buf:1": {}
