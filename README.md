@@ -1,32 +1,47 @@
-<img width="1024" height="220" alt="image" src="https://github.com/user-attachments/assets/22d1ec29-1486-4704-8061-3b98c092da21" />
-
 # Octopus API & SDKs
 
-**API & SDKs for o7studios product Octopus**
+Source protobufs and generated SDKs for the Octopus product.
 
-- Uses [Protocol Buffers](https://protobuf.dev/) with [Buf](https://buf.build/)
+## What's here
 
-## Development
+- `proto/` Protocol Buffer definitions (versioned)
+- `sdk/` Generated SDKs: Go, Java, TypeScript, and OpenAPI
+- `buf.yaml`, `buf.gen.yaml` Buf config for linting and generation
 
-Full development setup available as [Development Container](https://containers.dev/).
-Please use it for being able to tell "It works on my machine".
+## Requirements
 
-**Docker is required to be installed on your machine!**
+- [Buf](https://buf.build/) for code generation
+- `make` (optional) for the helper target
 
-### IntelliJ IDEA
+## Generate SDKs
 
-- Open IntelliJ (Welcome screen)
-- Navigate to `Remote Development` - `Dev Containers`
-- Press `New Dev Container`
-- Select `From VCS Project`
-- Select and connect with `Docker`
-- Select `IntelliJ IDEA`
-- Enter `Git Repository`: `https://github.com/o7studios/octopus-sdk`
-- Select `Detection for devcontainer.json file` `Automatic`
-- Press `Build Container and Continue`
+```sh
+make generate-proto
+```
 
-### Development Container Issues
+This removes existing generated output in `sdk/` and regenerates from `proto/` via `buf`.
 
-If you encounter an issue with setting up a development container, please
-try to rebuild it first before opening a GitHub Issue. It's not uncommon
-that some issues may fix themselves after a fresh container rebuild.
+## Install SDKs
+
+### Go
+
+```sh
+go get github.com/o7studios/octopus-sdk/sdk/go@latest
+```
+
+### TypeScript / JavaScript
+
+```sh
+npm install @o7studios/octopus-sdk
+```
+
+### Java
+
+Maven Central:
+
+```kotlin
+// build.gradle.kts
+dependencies {
+    implementation("studio.o7:octopus-sdk:VERSION")
+}
+```

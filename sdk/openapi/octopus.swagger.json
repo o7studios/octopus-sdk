@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "api/v1/api.proto",
+    "title": "v1/api.proto",
     "version": "version not set"
   },
   "tags": [
@@ -73,19 +73,20 @@
             "type": "string"
           },
           {
-            "name": "paginator.pageSize",
-            "description": "Number of items to return.",
+            "name": "paginator.page",
+            "description": "1-based page index (page=1 is first page)",
             "in": "query",
             "required": false,
             "type": "integer",
             "format": "int32"
           },
           {
-            "name": "paginator.cursor",
-            "description": "Cursor for efficient pagination. First page is empty.",
+            "name": "paginator.pageSize",
+            "description": "Number of items to return.",
             "in": "query",
             "required": false,
-            "type": "string"
+            "type": "integer",
+            "format": "int32"
           }
         ],
         "tags": [
@@ -247,9 +248,9 @@
           },
           "description": "List of found entries including revision, ID and timestamps."
         },
-        "nextCursor": {
-          "type": "string",
-          "description": "Cursor for next page. Empty means \"no more results\"."
+        "pageInfo": {
+          "$ref": "#/definitions/v1PageInfo",
+          "description": "Page information about the cursor."
         }
       },
       "description": "*\nResult of `Get` RPC."
@@ -293,17 +294,53 @@
       },
       "description": "*\nRepresents a flexible data object."
     },
+    "v1PageInfo": {
+      "type": "object",
+      "properties": {
+        "currentPage": {
+          "type": "integer",
+          "format": "int32",
+          "title": "current page (1-based)"
+        },
+        "currentPageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "current page size"
+        },
+        "totalPages": {
+          "type": "integer",
+          "format": "int32",
+          "title": "last page number"
+        },
+        "totalItems": {
+          "type": "string",
+          "format": "int64",
+          "title": "total matching items"
+        },
+        "nextPage": {
+          "type": "integer",
+          "format": "int32",
+          "title": "next page number. null if not present"
+        },
+        "prevPage": {
+          "type": "integer",
+          "format": "int32",
+          "title": "previous page number. null if not present"
+        }
+      }
+    },
     "v1Paginator": {
       "type": "object",
       "properties": {
+        "page": {
+          "type": "integer",
+          "format": "int32",
+          "title": "1-based page index (page=1 is first page)"
+        },
         "pageSize": {
           "type": "integer",
           "format": "int32",
           "description": "Number of items to return."
-        },
-        "cursor": {
-          "type": "string",
-          "description": "Cursor for efficient pagination. First page is empty."
         }
       },
       "description": "*\nPaginator for database entry cursor-pagination."

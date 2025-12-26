@@ -1,16 +1,15 @@
 syntax = "proto3";
 
-option go_package = "github.com/o7studios/octopus-sdk/sdk/golang/gen/api/v1;apiv1";
-option java_package = "studio.o7.octopus.sdk.gen.api.v1";
+option go_package = "github.com/o7studios/octopus-sdk/go/v1;octopusv1";
+option java_package = "studio.o7.octopus.sdk.v1";
 option java_multiple_files = true;
 
-package api.v1;
+package octopus_sdk.v1;
 
 import "google/protobuf/struct.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/api/annotations.proto";
-
 
 service Octopus {
   /**
@@ -83,10 +82,10 @@ message Object {
   google.protobuf.Struct data = 2;
 
   // Timestamp when the object should no longer be visible by default.
-  optional google.protobuf.Timestamp expired_at = 4;
+  optional google.protobuf.Timestamp expired_at = 3;
 
   // Timestamp when the object should be permanently deleted.
-  optional google.protobuf.Timestamp deleted_at = 5;
+  optional google.protobuf.Timestamp deleted_at = 4;
 }
 
 /**
@@ -136,11 +135,22 @@ message GetRequest {
  * Paginator for database entry cursor-pagination.
  */
 message Paginator {
-  // Number of items to return.
-  int32 page_size = 1;
+  // 1-based page index (page=1 is first page)
+  int32 page = 1;
 
-  // Cursor for efficient pagination. First page is empty.
-  string cursor = 2;
+  // Number of items to return.
+  int32 page_size = 2;
+}
+
+message PageInfo {
+  int32 current_page = 1;        // current page (1-based)
+  int32 current_page_size = 2;   // current page size
+
+  int32 total_pages = 3; // last page number
+  int64 total_items = 4; // total matching items
+
+  optional int32 next_page = 5;  // next page number. null if not present
+  optional int32 prev_page = 6;  // previous page number. null if not present
 }
 
 /**
@@ -150,8 +160,8 @@ message GetResponse {
   // List of found entries including revision, ID and timestamps.
   repeated Entry entries = 1;
 
-  // Cursor for next page. Empty means "no more results".
-  string next_cursor = 2;
+  // Page information about the cursor.
+  PageInfo page_info = 2;
 }
 
 /**

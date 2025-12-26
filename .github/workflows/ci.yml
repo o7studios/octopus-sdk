@@ -118,17 +118,17 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: "Set npm version from tag"
-        working-directory: sdk/js
+        working-directory: sdk/ts
         run: |
           npm version ${{ steps.version.outputs.version }} --no-git-tag-version
 
       - run: npm ci
-        working-directory: sdk/js
+        working-directory: sdk/ts
       - run: npm publish --dry-run
-        working-directory: sdk/js
+        working-directory: sdk/ts
 
       - name: "🚀 Publish to npm"
-        working-directory: sdk/js
+        working-directory: sdk/ts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
