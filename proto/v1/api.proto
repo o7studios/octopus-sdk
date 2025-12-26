@@ -29,7 +29,6 @@ service Octopus {
    * and ID.
    */
   rpc Call(Object) returns (Entry);
-  
   /**
    * Bidirectional stream for real-time updates. Clients
    * register for key-patterns (ListenRegister) and receive
