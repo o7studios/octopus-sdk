@@ -326,15 +326,15 @@ func (x *Paginator) GetPageSize() int32 {
 }
 
 type PageInfo struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Page          int32                  `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`                               // current page (1-based)
-	PageSize      int32                  `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`       // current page size
-	TotalPages    int32                  `protobuf:"varint,3,opt,name=total_pages,json=totalPages,proto3" json:"total_pages,omitempty"` // last page number
-	TotalItems    int64                  `protobuf:"varint,4,opt,name=total_items,json=totalItems,proto3" json:"total_items,omitempty"` // total matching items
-	NextPage      *int32                 `protobuf:"varint,5,opt,name=next_page,json=nextPage,proto3,oneof" json:"next_page,omitempty"` // next page id. null if not present
-	PrevPage      *int32                 `protobuf:"varint,6,opt,name=prev_page,json=prevPage,proto3,oneof" json:"prev_page,omitempty"` // previous page id. null if not present
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	CurrentPage     int32                  `protobuf:"varint,1,opt,name=current_page,json=currentPage,proto3" json:"current_page,omitempty"`               // current page (1-based)
+	CurrentPageSize int32                  `protobuf:"varint,2,opt,name=current_page_size,json=currentPageSize,proto3" json:"current_page_size,omitempty"` // current page size
+	TotalPages      int32                  `protobuf:"varint,3,opt,name=total_pages,json=totalPages,proto3" json:"total_pages,omitempty"`                  // last page number
+	TotalItems      int64                  `protobuf:"varint,4,opt,name=total_items,json=totalItems,proto3" json:"total_items,omitempty"`                  // total matching items
+	NextPage        *int32                 `protobuf:"varint,5,opt,name=next_page,json=nextPage,proto3,oneof" json:"next_page,omitempty"`                  // next page id. null if not present
+	PrevPage        *int32                 `protobuf:"varint,6,opt,name=prev_page,json=prevPage,proto3,oneof" json:"prev_page,omitempty"`                  // previous page id. null if not present
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *PageInfo) Reset() {
@@ -367,16 +367,16 @@ func (*PageInfo) Descriptor() ([]byte, []int) {
 	return file_v1_api_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *PageInfo) GetPage() int32 {
+func (x *PageInfo) GetCurrentPage() int32 {
 	if x != nil {
-		return x.Page
+		return x.CurrentPage
 	}
 	return 0
 }
 
-func (x *PageInfo) GetPageSize() int32 {
+func (x *PageInfo) GetCurrentPageSize() int32 {
 	if x != nil {
-		return x.PageSize
+		return x.CurrentPageSize
 	}
 	return 0
 }
@@ -704,10 +704,10 @@ const file_v1_api_proto_rawDesc = "" +
 	"_paginator\"<\n" +
 	"\tPaginator\x12\x12\n" +
 	"\x04page\x18\x01 \x01(\x05R\x04page\x12\x1b\n" +
-	"\tpage_size\x18\x02 \x01(\x05R\bpageSize\"\xdd\x01\n" +
-	"\bPageInfo\x12\x12\n" +
-	"\x04page\x18\x01 \x01(\x05R\x04page\x12\x1b\n" +
-	"\tpage_size\x18\x02 \x01(\x05R\bpageSize\x12\x1f\n" +
+	"\tpage_size\x18\x02 \x01(\x05R\bpageSize\"\xfb\x01\n" +
+	"\bPageInfo\x12!\n" +
+	"\fcurrent_page\x18\x01 \x01(\x05R\vcurrentPage\x12*\n" +
+	"\x11current_page_size\x18\x02 \x01(\x05R\x0fcurrentPageSize\x12\x1f\n" +
 	"\vtotal_pages\x18\x03 \x01(\x05R\n" +
 	"totalPages\x12\x1f\n" +
 	"\vtotal_items\x18\x04 \x01(\x03R\n" +
