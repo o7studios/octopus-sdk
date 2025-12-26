@@ -250,7 +250,7 @@
         },
         "pageInfo": {
           "$ref": "#/definitions/v1PageInfo",
-          "description": "Page information's about the cursor."
+          "description": "Page information about the cursor."
         }
       },
       "description": "*\nResult of `Get` RPC."
@@ -320,12 +320,12 @@
         "nextPage": {
           "type": "integer",
           "format": "int32",
-          "title": "next page id. null if not present"
+          "title": "next page number. null if not present"
         },
         "prevPage": {
           "type": "integer",
           "format": "int32",
-          "title": "previous page id. null if not present"
+          "title": "previous page number. null if not present"
         }
       }
     },

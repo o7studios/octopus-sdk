@@ -331,8 +331,8 @@ type PageInfo struct {
 	CurrentPageSize int32                  `protobuf:"varint,2,opt,name=current_page_size,json=currentPageSize,proto3" json:"current_page_size,omitempty"` // current page size
 	TotalPages      int32                  `protobuf:"varint,3,opt,name=total_pages,json=totalPages,proto3" json:"total_pages,omitempty"`                  // last page number
 	TotalItems      int64                  `protobuf:"varint,4,opt,name=total_items,json=totalItems,proto3" json:"total_items,omitempty"`                  // total matching items
-	NextPage        *int32                 `protobuf:"varint,5,opt,name=next_page,json=nextPage,proto3,oneof" json:"next_page,omitempty"`                  // next page id. null if not present
-	PrevPage        *int32                 `protobuf:"varint,6,opt,name=prev_page,json=prevPage,proto3,oneof" json:"prev_page,omitempty"`                  // previous page id. null if not present
+	NextPage        *int32                 `protobuf:"varint,5,opt,name=next_page,json=nextPage,proto3,oneof" json:"next_page,omitempty"`                  // next page number. null if not present
+	PrevPage        *int32                 `protobuf:"varint,6,opt,name=prev_page,json=prevPage,proto3,oneof" json:"prev_page,omitempty"`                  // previous page number. null if not present
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -415,7 +415,7 @@ type GetResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// List of found entries including revision, ID and timestamps.
 	Entries []*Entry `protobuf:"bytes,1,rep,name=entries,proto3" json:"entries,omitempty"`
-	// Page information's about the cursor.
+	// Page information about the cursor.
 	PageInfo      *PageInfo `protobuf:"bytes,2,opt,name=page_info,json=pageInfo,proto3" json:"page_info,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
