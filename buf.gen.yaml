@@ -1,31 +1,31 @@
 version: v2
 
 plugins:
-  # Java
-  - remote: buf.build/protocolbuffers/java:v25.3
-    out: ./sdk/java/src/generated/java
-  - remote: buf.build/grpc/java:v1.62.2
-    out: ./sdk/java/src/generated/java
 
-  # Golang
-  - remote: buf.build/grpc/go:v1.5.1
-    out: ./sdk/golang/gen
-    opt:
-      - paths=source_relative
-  - remote: buf.build/protocolbuffers/go:v1.36.5
-    out: ./sdk/golang/gen
+  - remote: buf.build/protocolbuffers/java
+    out: sdk/java/src/java
+
+  - remote: buf.build/grpc/java
+    out: sdk/java/src/java
+
+  - remote: buf.build/protocolbuffers/go
+    out: sdk/go
     opt:
       - paths=source_relative
 
-  # JavaScript / TypeScript
-  - remote: buf.build/bufbuild/es:v2.2.3
-    out: ./sdk/js/gen
-  - remote: buf.build/grpc/node:v1.13.0
-    out: ./sdk/js/gen
+  - remote: buf.build/grpc/go
+    out: sdk/go
+    opt:
+      - paths=source_relative
 
-  # OpenAPI (Swagger)
-  - remote: buf.build/grpc-ecosystem/openapiv2:v2.27.2
-    out: ./sdk/openapi
+  - remote: buf.build/bufbuild/es
+    out: sdk/ts/src/gen
+    opt:
+      - target=ts
+    include_imports: true
+
+  - remote: buf.build/grpc-ecosystem/openapiv2
+    out: sdk/openapi
     opt:
       - allow_merge=true
       - merge_file_name=octopus
