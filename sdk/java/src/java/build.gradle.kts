@@ -25,14 +25,9 @@ information {
 
     developers {
         developer {
-            id = "julian-siebert"
-            name = "Julian Siebert"
-            email = "julian.siebert@o7.studio"
-        }
-        developer {
             id = "raphael-goetz"
-            name = "Raphael Goetz"
-            email = "raphael.goetz@o7.studio"
+            name = "Konfuzius"
+            email = "konfuzius@o7.studio"
         }
     }
 

@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.internal.relocated.kotlin.metadata.internal.metadata.deserialization.VersionRequirementTable.Companion.create
+
 rootProject.name = "octopus-sdk"
 
 dependencyResolutionManagement {
