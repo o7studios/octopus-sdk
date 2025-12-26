@@ -149,8 +149,8 @@ message PageInfo {
   int32 total_pages = 3; // last page number
   int64 total_items = 4; // total matching items
 
-  optional int32 next_page = 5;  // next page id. null if not present
-  optional int32 prev_page = 6;  // previous page id. null if not present
+  optional int32 next_page = 5;  // next page number. null if not present
+  optional int32 prev_page = 6;  // previous page number. null if not present
 }
 
 /**
@@ -160,7 +160,7 @@ message GetResponse {
   // List of found entries including revision, ID and timestamps.
   repeated Entry entries = 1;
 
-  // Page information's about the cursor.
+  // Page information about the cursor.
   PageInfo page_info = 2;
 }
 
