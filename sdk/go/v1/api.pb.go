@@ -7,7 +7,6 @@
 package octopusv1
 
 import (
-	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -670,7 +669,7 @@ var File_v1_api_proto protoreflect.FileDescriptor
 
 const file_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"\fv1/api.proto\x12\x0eoctopus_sdk.v1\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1cgoogle/api/annotations.proto\"\xe5\x01\n" +
+	"\fv1/api.proto\x12\x0eoctopus_sdk.v1\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe5\x01\n" +
 	"\x06Object\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12+\n" +
 	"\x04data\x18\x02 \x01(\v2\x17.google.protobuf.StructR\x04data\x12>\n" +
@@ -731,11 +730,11 @@ const file_v1_api_proto_rawDesc = "" +
 	"\x0eListenRegister\x12\x1f\n" +
 	"\vkey_pattern\x18\x01 \x01(\tR\n" +
 	"keyPattern\x12\x1a\n" +
-	"\bpriority\x18\x02 \x01(\x05R\bpriority2\xc6\x02\n" +
-	"\aOctopus\x12S\n" +
-	"\x03Get\x12\x1a.octopus_sdk.v1.GetRequest\x1a\x1b.octopus_sdk.v1.GetResponse\"\x13\x82\xd3\xe4\x93\x02\r\x12\v/v1/entries\x12O\n" +
-	"\x05Write\x12\x16.octopus_sdk.v1.Object\x1a\x16.google.protobuf.Empty\"\x16\x82\xd3\xe4\x93\x02\x10:\x01*\"\v/v1/objects\x12M\n" +
-	"\x04Call\x12\x16.octopus_sdk.v1.Object\x1a\x15.octopus_sdk.v1.Entry\"\x16\x82\xd3\xe4\x93\x02\x10:\x01*\"\v/v1/entries\x12F\n" +
+	"\bpriority\x18\x02 \x01(\x05R\bpriority2\x81\x02\n" +
+	"\aOctopus\x12>\n" +
+	"\x03Get\x12\x1a.octopus_sdk.v1.GetRequest\x1a\x1b.octopus_sdk.v1.GetResponse\x127\n" +
+	"\x05Write\x12\x16.octopus_sdk.v1.Object\x1a\x16.google.protobuf.Empty\x125\n" +
+	"\x04Call\x12\x16.octopus_sdk.v1.Object\x1a\x15.octopus_sdk.v1.Entry\x12F\n" +
 	"\x06Listen\x12\x1d.octopus_sdk.v1.ListenMessage\x1a\x19.octopus_sdk.v1.EventCall(\x010\x01BN\n" +
 	"\x18studio.o7.octopus.sdk.v1P\x01Z0github.com/o7studios/octopus-sdk/go/v1;octopusv1b\x06proto3"
 
