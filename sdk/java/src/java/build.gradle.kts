@@ -10,12 +10,6 @@ dependencies {
     compileOnlyApi(libs.javax)
 }
 
-sourceSets {
-    named("main") {
-        java.srcDir("$projectDir/src/generated/java")
-    }
-}
-
 group = "studio.o7"
 
 information {
