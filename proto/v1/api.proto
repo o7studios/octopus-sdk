@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-option go_package = "github.com/o7studios/octopus-sdk/sdk/golang/gen/api/v1;apiv1";
-option java_package = "studio.o7.octopus.sdk.gen.api.v1";
+option go_package = "github.com/o7studios/octopus-sdk/go/v1;octopusv1";
+option java_package = "studio.o7.octopus.sdk.v1";
 option java_multiple_files = true;
 
-package api.v1;
+package octopus_sdk.v1;
 
 import "google/protobuf/struct.proto";
 import "google/protobuf/empty.proto";
@@ -143,8 +143,8 @@ message Paginator {
 }
 
 message PageInfo {
-  int32 page = 1;        // current page (1-based)
-  int32 page_size = 2;   // current page size
+  int32 current_page = 1;        // current page (1-based)
+  int32 current_page_size = 2;   // current page size
 
   int32 total_pages = 3; // last page number
   int64 total_items = 4; // total matching items
