@@ -297,12 +297,12 @@
     "v1PageInfo": {
       "type": "object",
       "properties": {
-        "page": {
+        "currentPage": {
           "type": "integer",
           "format": "int32",
           "title": "current page (1-based)"
         },
-        "pageSize": {
+        "currentPageSize": {
           "type": "integer",
           "format": "int32",
           "title": "current page size"
