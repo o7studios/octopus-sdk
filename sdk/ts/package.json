@@ -3,16 +3,23 @@
   "version": "0.0.1",
   "description": "SDK for o7studios product Octopus",
   "type": "module",
-  "main": "./gen/api/v1/api_grpc_pb.js",
-  "types": "./gen/api/v1/api_pb.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
-    "gen"
+    "dist"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "scripts": {
-    "build": "echo 'No build step'",
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist",
     "prepublishOnly": "npm run build"
   },
-  "author": "Julian Siebert <julian.siebert@o7.studio>",
+  "author": "Konfuzius <konfuzius@o7.studio>",
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
@@ -25,9 +32,10 @@
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {
-    "@bufbuild/protobuf": "^2.10.0",
-    "@grpc/grpc-js": "^1.14.1",
-    "google-protobuf": "^4.0.0"
+  "devDependencies": {
+    "@bufbuild/protobuf": "^2.10.2"
+  },
+  "peerDependencies": {
+    "@bufbuild/protobuf": "^2.10.0"
   }
 }
