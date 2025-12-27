@@ -112,7 +112,7 @@ message GetRequest {
   optional string data_filter = 5;
 
   // Entry paginator
-  optional Paginator paginator = 6;
+  Paginator paginator = 6;
 }
 
 /**
