@@ -191,7 +191,7 @@ type GetRequest struct {
 	// Filter by json in data in MongoDB filter similar pattern
 	DataFilter *string `protobuf:"bytes,5,opt,name=data_filter,json=dataFilter,proto3,oneof" json:"data_filter,omitempty"`
 	// Entry paginator
-	Paginator     *Paginator `protobuf:"bytes,6,opt,name=paginator,proto3,oneof" json:"paginator,omitempty"`
+	Paginator     *Paginator `protobuf:"bytes,6,opt,name=paginator,proto3" json:"paginator,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -684,7 +684,7 @@ const file_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12\x1a\n" +
 	"\brevision\x18\x03 \x01(\x03R\brevision\x12\x0e\n" +
-	"\x02id\x18\x04 \x01(\tR\x02id\"\xcd\x03\n" +
+	"\x02id\x18\x04 \x01(\tR\x02id\"\xba\x03\n" +
 	"\n" +
 	"GetRequest\x12\x1f\n" +
 	"\vkey_pattern\x18\x01 \x01(\tR\n" +
@@ -693,14 +693,12 @@ const file_v1_api_proto_rawDesc = "" +
 	"\x16created_at_range_start\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampH\x01R\x13createdAtRangeStart\x88\x01\x01\x12P\n" +
 	"\x14created_at_range_end\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampH\x02R\x11createdAtRangeEnd\x88\x01\x01\x12$\n" +
 	"\vdata_filter\x18\x05 \x01(\tH\x03R\n" +
-	"dataFilter\x88\x01\x01\x12<\n" +
-	"\tpaginator\x18\x06 \x01(\v2\x19.octopus_sdk.v1.PaginatorH\x04R\tpaginator\x88\x01\x01B\x12\n" +
+	"dataFilter\x88\x01\x01\x127\n" +
+	"\tpaginator\x18\x06 \x01(\v2\x19.octopus_sdk.v1.PaginatorR\tpaginatorB\x12\n" +
 	"\x10_include_expiredB\x19\n" +
 	"\x17_created_at_range_startB\x17\n" +
 	"\x15_created_at_range_endB\x0e\n" +
-	"\f_data_filterB\f\n" +
-	"\n" +
-	"_paginator\"<\n" +
+	"\f_data_filter\"<\n" +
 	"\tPaginator\x12\x12\n" +
 	"\x04page\x18\x01 \x01(\x05R\x04page\x12\x1b\n" +
 	"\tpage_size\x18\x02 \x01(\x05R\bpageSize\"\xfb\x01\n" +
