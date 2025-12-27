@@ -9,7 +9,6 @@ package octopus_sdk.v1;
 import "google/protobuf/struct.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
-import "google/api/annotations.proto";
 
 service Octopus {
   /**
@@ -17,34 +16,19 @@ service Octopus {
    * key pattern. Can optionally include expired objects and
    * filter by revision creation time.
    */
-  rpc Get(GetRequest) returns (GetResponse) {
-    option (google.api.http) = {
-      get: "/v1/entries"
-    };
-  }
+  rpc Get(GetRequest) returns (GetResponse);
 
   /**
    * Stores an object on key with new revision in the database.
    */
-  rpc Write(Object) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      post: "/v1/objects"
-      body: "*"
-    };
-  }
+  rpc Write(Object) returns (google.protobuf.Empty);
 
   /**
    * Stores an object on key with new revision in the database
    * and returns the stored version, including the revision
    * and ID.
    */
-  rpc Call(Object) returns (Entry) {
-    option (google.api.http) = {
-      post: "/v1/entries"
-      body: "*"
-    };
-  }
-
+  rpc Call(Object) returns (Entry);
   /**
    * Bidirectional stream for real-time updates. Clients
    * register for key-patterns (ListenRegister) and receive
