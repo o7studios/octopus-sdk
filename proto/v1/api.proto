@@ -149,8 +149,8 @@ message GetResponse {
  */
 message ListenMessage {
   // Pattern to match keys. Supports wildcards:
-  //   *  — matches exactly one token (between dots), e.g., "foo.*.bar" matches "foo.x.bar" but not "foo.x.y.bar"
-  //   >  — matches one or more tokens until the end, e.g., "foo.>" matches "foo", "foo.bar", "foo.bar.baz", etc.
+  //   *  - matches exactly one token (between dots), e.g., "foo.*.bar" matches "foo.x.bar" but not "foo.x.y.bar"
+  //   >  - matches one or more tokens until the end, e.g., "foo.>" matches "foo", "foo.bar", "foo.bar.baz", etc.
   // Multiple wildcards can be used in a single pattern. Tokens are dot-separated.
   repeated string key_pattern = 1;
 }
