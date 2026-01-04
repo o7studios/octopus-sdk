@@ -26,7 +26,7 @@ This removes existing generated output in `sdk/` and regenerates from `proto/` v
 ### Go
 
 ```sh
-go get github.com/o7studios/octopus-sdk/sdk/go@latest
+go get github.com/o7studios/octopus-sdk@latest
 ```
 
 ### TypeScript / JavaScript
