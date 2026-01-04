@@ -58,11 +58,14 @@ message Object {
   // Flexible JSON-like data structure.
   google.protobuf.Struct data = 2;
 
+  // This will create a copy of this object and increment the current revision number
+  bool preserve_previous_entry = 3;
+
   // Timestamp when the object should no longer be visible by default.
-  optional google.protobuf.Timestamp expired_at = 3;
+  optional google.protobuf.Timestamp expired_at = 4;
 
   // Timestamp when the object should be permanently deleted.
-  optional google.protobuf.Timestamp deleted_at = 4;
+  optional google.protobuf.Timestamp deleted_at = 5;
 }
 
 /**
