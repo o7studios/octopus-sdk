@@ -36,7 +36,7 @@ service Octopus {
    * The client must first send a `ListenMessage` message
    * to specify which key-pattern to listen to.
    *
-   * Step 2: Re-Register
+   * Step 2: Event Reception
    *
    * After registration, the server sends `EventCall` messages
    * for objects matching the registered key-pattern.
