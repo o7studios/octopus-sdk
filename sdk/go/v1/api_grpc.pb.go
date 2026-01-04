@@ -32,25 +32,24 @@ const (
 type OctopusClient interface {
 	// *
 	// Retrieves existing entries from the database matching a
-	// key pattern. Can optionally include expired objects and
-	// filter by revision creation time.
+	// key pattern. Can optionally include expired (include all
+	// revisions) objects and filter by creation time.
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	// *
-	// Stores an object on key with new revision in the database.
+	// Stores an object on key.
 	Write(ctx context.Context, in *Object, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// *
-	// Stores an object on key with new revision in the database
-	// and returns the stored version, including the revision
-	// and ID.
+	// Stores an object on key in the database and returns the
+	// stored version, including the revision and ID.
 	Call(ctx context.Context, in *Object, opts ...grpc.CallOption) (*Entry, error)
 	// *
 	// Bidirectional stream for real-time updates. Clients
-	// register for key-patterns (ListenRegister) and receive
+	// register for key-patterns (ListenMessage) and receive
 	// events (EventCall).
 	//
 	// Step 1: Registration
 	//
-	// The client must first send a `ListenRegister` message
+	// The client must first send a `ListenMessage` message
 	// to specify which key-pattern to listen to.
 	//
 	// Step 2: Event Reception
@@ -58,13 +57,9 @@ type OctopusClient interface {
 	// After registration, the server sends `EventCall` messages
 	// for objects matching the registered key-pattern.
 	//
-	// Rules:
-	//
-	// 1. Only one registration per stream is allowed.
-	//
-	// 2. After registration, the server sends `EventCall` messages
-	// which have to be sent back for acknowledgement
-	// (and possibly modification).
+	// If you need other keys/more keys you can just send a new
+	// `ListenMessage`. This will reset all keys for the current
+	// subscription and the new keys will be used.
 	Listen(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[ListenMessage, EventCall], error)
 }
 
@@ -125,25 +120,24 @@ type Octopus_ListenClient = grpc.BidiStreamingClient[ListenMessage, EventCall]
 type OctopusServer interface {
 	// *
 	// Retrieves existing entries from the database matching a
-	// key pattern. Can optionally include expired objects and
-	// filter by revision creation time.
+	// key pattern. Can optionally include expired (include all
+	// revisions) objects and filter by creation time.
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	// *
-	// Stores an object on key with new revision in the database.
+	// Stores an object on key.
 	Write(context.Context, *Object) (*emptypb.Empty, error)
 	// *
-	// Stores an object on key with new revision in the database
-	// and returns the stored version, including the revision
-	// and ID.
+	// Stores an object on key in the database and returns the
+	// stored version, including the revision and ID.
 	Call(context.Context, *Object) (*Entry, error)
 	// *
 	// Bidirectional stream for real-time updates. Clients
-	// register for key-patterns (ListenRegister) and receive
+	// register for key-patterns (ListenMessage) and receive
 	// events (EventCall).
 	//
 	// Step 1: Registration
 	//
-	// The client must first send a `ListenRegister` message
+	// The client must first send a `ListenMessage` message
 	// to specify which key-pattern to listen to.
 	//
 	// Step 2: Event Reception
@@ -151,13 +145,9 @@ type OctopusServer interface {
 	// After registration, the server sends `EventCall` messages
 	// for objects matching the registered key-pattern.
 	//
-	// Rules:
-	//
-	// 1. Only one registration per stream is allowed.
-	//
-	// 2. After registration, the server sends `EventCall` messages
-	// which have to be sent back for acknowledgement
-	// (and possibly modification).
+	// If you need other keys/more keys you can just send a new
+	// `ListenMessage`. This will reset all keys for the current
+	// subscription and the new keys will be used.
 	Listen(grpc.BidiStreamingServer[ListenMessage, EventCall]) error
 	mustEmbedUnimplementedOctopusServer()
 }
