@@ -32,10 +32,12 @@ type Object struct {
 	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
 	// Flexible JSON-like data structure.
 	Data *structpb.Struct `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
+	// This will create a copy of this object and increment the current revision number
+	PreservePreviousEntry bool `protobuf:"varint,3,opt,name=preserve_previous_entry,json=preservePreviousEntry,proto3" json:"preserve_previous_entry,omitempty"`
 	// Timestamp when the object should no longer be visible by default.
-	ExpiredAt *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=expired_at,json=expiredAt,proto3,oneof" json:"expired_at,omitempty"`
+	ExpiredAt *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=expired_at,json=expiredAt,proto3,oneof" json:"expired_at,omitempty"`
 	// Timestamp when the object should be permanently deleted.
-	DeletedAt     *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=deleted_at,json=deletedAt,proto3,oneof" json:"deleted_at,omitempty"`
+	DeletedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=deleted_at,json=deletedAt,proto3,oneof" json:"deleted_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -82,6 +84,13 @@ func (x *Object) GetData() *structpb.Struct {
 		return x.Data
 	}
 	return nil
+}
+
+func (x *Object) GetPreservePreviousEntry() bool {
+	if x != nil {
+		return x.PreservePreviousEntry
+	}
+	return false
 }
 
 func (x *Object) GetExpiredAt() *timestamppb.Timestamp {
@@ -575,14 +584,15 @@ var File_v1_api_proto protoreflect.FileDescriptor
 
 const file_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"\fv1/api.proto\x12\x0eoctopus_sdk.v1\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe5\x01\n" +
+	"\fv1/api.proto\x12\x0eoctopus_sdk.v1\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x9d\x02\n" +
 	"\x06Object\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12+\n" +
-	"\x04data\x18\x02 \x01(\v2\x17.google.protobuf.StructR\x04data\x12>\n" +
+	"\x04data\x18\x02 \x01(\v2\x17.google.protobuf.StructR\x04data\x126\n" +
+	"\x17preserve_previous_entry\x18\x03 \x01(\bR\x15preservePreviousEntry\x12>\n" +
 	"\n" +
-	"expired_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampH\x00R\texpiredAt\x88\x01\x01\x12>\n" +
+	"expired_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampH\x00R\texpiredAt\x88\x01\x01\x12>\n" +
 	"\n" +
-	"deleted_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampH\x01R\tdeletedAt\x88\x01\x01B\r\n" +
+	"deleted_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampH\x01R\tdeletedAt\x88\x01\x01B\r\n" +
 	"\v_expired_atB\r\n" +
 	"\v_deleted_at\"\x9e\x01\n" +
 	"\x05Entry\x12.\n" +
