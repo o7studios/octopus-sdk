@@ -32,7 +32,7 @@ type Object struct {
 	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
 	// Flexible JSON-like data structure.
 	Data *structpb.Struct `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
-	// This will create a copy of this object and increment the current revision number
+	// This will create a copy of this object and increment the current revision number.
 	PreservePreviousEntry bool `protobuf:"varint,3,opt,name=preserve_previous_entry,json=preservePreviousEntry,proto3" json:"preserve_previous_entry,omitempty"`
 	// Timestamp when the object should no longer be visible by default.
 	ExpiredAt *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=expired_at,json=expiredAt,proto3,oneof" json:"expired_at,omitempty"`
