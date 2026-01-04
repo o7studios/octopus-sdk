@@ -468,11 +468,12 @@ func (x *GetResponse) GetPageInfo() *PageInfo {
 // Message type for the listen stream.
 type ListenMessage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Types that are valid to be assigned to Msg:
+	// Pattern to match keys. Supports wildcards:
+	//   - — matches exactly one token (between dots), e.g., "foo.*.bar" matches "foo.x.bar" but not "foo.x.y.bar"
+	//     >  — matches one or more tokens until the end, e.g., "foo.>" matches "foo", "foo.bar", "foo.bar.baz", etc.
 	//
-	//	*ListenMessage_Callback
-	//	*ListenMessage_Register
-	Msg           isListenMessage_Msg `protobuf_oneof:"msg"`
+	// Multiple wildcards can be used in a single pattern. Tokens are dot-separated.
+	KeyPattern    []string `protobuf:"bytes,1,rep,name=key_pattern,json=keyPattern,proto3" json:"key_pattern,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -507,46 +508,12 @@ func (*ListenMessage) Descriptor() ([]byte, []int) {
 	return file_v1_api_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *ListenMessage) GetMsg() isListenMessage_Msg {
+func (x *ListenMessage) GetKeyPattern() []string {
 	if x != nil {
-		return x.Msg
+		return x.KeyPattern
 	}
 	return nil
 }
-
-func (x *ListenMessage) GetCallback() *EventCall {
-	if x != nil {
-		if x, ok := x.Msg.(*ListenMessage_Callback); ok {
-			return x.Callback
-		}
-	}
-	return nil
-}
-
-func (x *ListenMessage) GetRegister() *ListenRegister {
-	if x != nil {
-		if x, ok := x.Msg.(*ListenMessage_Register); ok {
-			return x.Register
-		}
-	}
-	return nil
-}
-
-type isListenMessage_Msg interface {
-	isListenMessage_Msg()
-}
-
-type ListenMessage_Callback struct {
-	Callback *EventCall `protobuf:"bytes,1,opt,name=callback,proto3,oneof"`
-}
-
-type ListenMessage_Register struct {
-	Register *ListenRegister `protobuf:"bytes,2,opt,name=register,proto3,oneof"`
-}
-
-func (*ListenMessage_Callback) isListenMessage_Msg() {}
-
-func (*ListenMessage_Register) isListenMessage_Msg() {}
 
 // *
 // Represents a event in the stream.
@@ -604,67 +571,6 @@ func (x *EventCall) GetCallId() string {
 	return ""
 }
 
-// *
-// Registers the stream for real-time updates on specific
-// key pattern.
-type ListenRegister struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// Pattern to match keys. Supports wildcards:
-	//   - — matches exactly one token (between dots), e.g., "foo.*.bar" matches "foo.x.bar" but not "foo.x.y.bar"
-	//     >  — matches one or more tokens until the end, e.g., "foo.>" matches "foo", "foo.bar", "foo.bar.baz", etc.
-	//
-	// Multiple wildcards can be used in a single pattern. Tokens are dot-separated.
-	KeyPattern string `protobuf:"bytes,1,opt,name=key_pattern,json=keyPattern,proto3" json:"key_pattern,omitempty"`
-	// Priority of the registration (e.g. determines event order; lower is later).
-	Priority      int32 `protobuf:"varint,2,opt,name=priority,proto3" json:"priority,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ListenRegister) Reset() {
-	*x = ListenRegister{}
-	mi := &file_v1_api_proto_msgTypes[8]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListenRegister) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListenRegister) ProtoMessage() {}
-
-func (x *ListenRegister) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_api_proto_msgTypes[8]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ListenRegister.ProtoReflect.Descriptor instead.
-func (*ListenRegister) Descriptor() ([]byte, []int) {
-	return file_v1_api_proto_rawDescGZIP(), []int{8}
-}
-
-func (x *ListenRegister) GetKeyPattern() string {
-	if x != nil {
-		return x.KeyPattern
-	}
-	return ""
-}
-
-func (x *ListenRegister) GetPriority() int32 {
-	if x != nil {
-		return x.Priority
-	}
-	return 0
-}
-
 var File_v1_api_proto protoreflect.FileDescriptor
 
 const file_v1_api_proto_rawDesc = "" +
@@ -717,18 +623,13 @@ const file_v1_api_proto_rawDesc = "" +
 	"_prev_page\"u\n" +
 	"\vGetResponse\x12/\n" +
 	"\aentries\x18\x01 \x03(\v2\x15.octopus_sdk.v1.EntryR\aentries\x125\n" +
-	"\tpage_info\x18\x02 \x01(\v2\x18.octopus_sdk.v1.PageInfoR\bpageInfo\"\x8d\x01\n" +
-	"\rListenMessage\x127\n" +
-	"\bcallback\x18\x01 \x01(\v2\x19.octopus_sdk.v1.EventCallH\x00R\bcallback\x12<\n" +
-	"\bregister\x18\x02 \x01(\v2\x1e.octopus_sdk.v1.ListenRegisterH\x00R\bregisterB\x05\n" +
-	"\x03msg\"T\n" +
+	"\tpage_info\x18\x02 \x01(\v2\x18.octopus_sdk.v1.PageInfoR\bpageInfo\"0\n" +
+	"\rListenMessage\x12\x1f\n" +
+	"\vkey_pattern\x18\x01 \x03(\tR\n" +
+	"keyPattern\"T\n" +
 	"\tEventCall\x12.\n" +
 	"\x06object\x18\x01 \x01(\v2\x16.octopus_sdk.v1.ObjectR\x06object\x12\x17\n" +
-	"\acall_id\x18\x02 \x01(\tR\x06callId\"M\n" +
-	"\x0eListenRegister\x12\x1f\n" +
-	"\vkey_pattern\x18\x01 \x01(\tR\n" +
-	"keyPattern\x12\x1a\n" +
-	"\bpriority\x18\x02 \x01(\x05R\bpriority2\x81\x02\n" +
+	"\acall_id\x18\x02 \x01(\tR\x06callId2\x81\x02\n" +
 	"\aOctopus\x12>\n" +
 	"\x03Get\x12\x1a.octopus_sdk.v1.GetRequest\x1a\x1b.octopus_sdk.v1.GetResponse\x127\n" +
 	"\x05Write\x12\x16.octopus_sdk.v1.Object\x1a\x16.google.protobuf.Empty\x125\n" +
@@ -748,7 +649,7 @@ func file_v1_api_proto_rawDescGZIP() []byte {
 	return file_v1_api_proto_rawDescData
 }
 
-var file_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_v1_api_proto_goTypes = []any{
 	(*Object)(nil),                // 0: octopus_sdk.v1.Object
 	(*Entry)(nil),                 // 1: octopus_sdk.v1.Entry
@@ -758,38 +659,35 @@ var file_v1_api_proto_goTypes = []any{
 	(*GetResponse)(nil),           // 5: octopus_sdk.v1.GetResponse
 	(*ListenMessage)(nil),         // 6: octopus_sdk.v1.ListenMessage
 	(*EventCall)(nil),             // 7: octopus_sdk.v1.EventCall
-	(*ListenRegister)(nil),        // 8: octopus_sdk.v1.ListenRegister
-	(*structpb.Struct)(nil),       // 9: google.protobuf.Struct
-	(*timestamppb.Timestamp)(nil), // 10: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),         // 11: google.protobuf.Empty
+	(*structpb.Struct)(nil),       // 8: google.protobuf.Struct
+	(*timestamppb.Timestamp)(nil), // 9: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),         // 10: google.protobuf.Empty
 }
 var file_v1_api_proto_depIdxs = []int32{
-	9,  // 0: octopus_sdk.v1.Object.data:type_name -> google.protobuf.Struct
-	10, // 1: octopus_sdk.v1.Object.expired_at:type_name -> google.protobuf.Timestamp
-	10, // 2: octopus_sdk.v1.Object.deleted_at:type_name -> google.protobuf.Timestamp
+	8,  // 0: octopus_sdk.v1.Object.data:type_name -> google.protobuf.Struct
+	9,  // 1: octopus_sdk.v1.Object.expired_at:type_name -> google.protobuf.Timestamp
+	9,  // 2: octopus_sdk.v1.Object.deleted_at:type_name -> google.protobuf.Timestamp
 	0,  // 3: octopus_sdk.v1.Entry.object:type_name -> octopus_sdk.v1.Object
-	10, // 4: octopus_sdk.v1.Entry.created_at:type_name -> google.protobuf.Timestamp
-	10, // 5: octopus_sdk.v1.GetRequest.created_at_range_start:type_name -> google.protobuf.Timestamp
-	10, // 6: octopus_sdk.v1.GetRequest.created_at_range_end:type_name -> google.protobuf.Timestamp
+	9,  // 4: octopus_sdk.v1.Entry.created_at:type_name -> google.protobuf.Timestamp
+	9,  // 5: octopus_sdk.v1.GetRequest.created_at_range_start:type_name -> google.protobuf.Timestamp
+	9,  // 6: octopus_sdk.v1.GetRequest.created_at_range_end:type_name -> google.protobuf.Timestamp
 	3,  // 7: octopus_sdk.v1.GetRequest.paginator:type_name -> octopus_sdk.v1.Paginator
 	1,  // 8: octopus_sdk.v1.GetResponse.entries:type_name -> octopus_sdk.v1.Entry
 	4,  // 9: octopus_sdk.v1.GetResponse.page_info:type_name -> octopus_sdk.v1.PageInfo
-	7,  // 10: octopus_sdk.v1.ListenMessage.callback:type_name -> octopus_sdk.v1.EventCall
-	8,  // 11: octopus_sdk.v1.ListenMessage.register:type_name -> octopus_sdk.v1.ListenRegister
-	0,  // 12: octopus_sdk.v1.EventCall.object:type_name -> octopus_sdk.v1.Object
-	2,  // 13: octopus_sdk.v1.Octopus.Get:input_type -> octopus_sdk.v1.GetRequest
-	0,  // 14: octopus_sdk.v1.Octopus.Write:input_type -> octopus_sdk.v1.Object
-	0,  // 15: octopus_sdk.v1.Octopus.Call:input_type -> octopus_sdk.v1.Object
-	6,  // 16: octopus_sdk.v1.Octopus.Listen:input_type -> octopus_sdk.v1.ListenMessage
-	5,  // 17: octopus_sdk.v1.Octopus.Get:output_type -> octopus_sdk.v1.GetResponse
-	11, // 18: octopus_sdk.v1.Octopus.Write:output_type -> google.protobuf.Empty
-	1,  // 19: octopus_sdk.v1.Octopus.Call:output_type -> octopus_sdk.v1.Entry
-	7,  // 20: octopus_sdk.v1.Octopus.Listen:output_type -> octopus_sdk.v1.EventCall
-	17, // [17:21] is the sub-list for method output_type
-	13, // [13:17] is the sub-list for method input_type
-	13, // [13:13] is the sub-list for extension type_name
-	13, // [13:13] is the sub-list for extension extendee
-	0,  // [0:13] is the sub-list for field type_name
+	0,  // 10: octopus_sdk.v1.EventCall.object:type_name -> octopus_sdk.v1.Object
+	2,  // 11: octopus_sdk.v1.Octopus.Get:input_type -> octopus_sdk.v1.GetRequest
+	0,  // 12: octopus_sdk.v1.Octopus.Write:input_type -> octopus_sdk.v1.Object
+	0,  // 13: octopus_sdk.v1.Octopus.Call:input_type -> octopus_sdk.v1.Object
+	6,  // 14: octopus_sdk.v1.Octopus.Listen:input_type -> octopus_sdk.v1.ListenMessage
+	5,  // 15: octopus_sdk.v1.Octopus.Get:output_type -> octopus_sdk.v1.GetResponse
+	10, // 16: octopus_sdk.v1.Octopus.Write:output_type -> google.protobuf.Empty
+	1,  // 17: octopus_sdk.v1.Octopus.Call:output_type -> octopus_sdk.v1.Entry
+	7,  // 18: octopus_sdk.v1.Octopus.Listen:output_type -> octopus_sdk.v1.EventCall
+	15, // [15:19] is the sub-list for method output_type
+	11, // [11:15] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_v1_api_proto_init() }
@@ -800,17 +698,13 @@ func file_v1_api_proto_init() {
 	file_v1_api_proto_msgTypes[0].OneofWrappers = []any{}
 	file_v1_api_proto_msgTypes[2].OneofWrappers = []any{}
 	file_v1_api_proto_msgTypes[4].OneofWrappers = []any{}
-	file_v1_api_proto_msgTypes[6].OneofWrappers = []any{
-		(*ListenMessage_Callback)(nil),
-		(*ListenMessage_Register)(nil),
-	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_v1_api_proto_rawDesc), len(file_v1_api_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
