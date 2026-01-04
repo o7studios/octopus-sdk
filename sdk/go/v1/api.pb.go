@@ -478,8 +478,8 @@ func (x *GetResponse) GetPageInfo() *PageInfo {
 type ListenMessage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Pattern to match keys. Supports wildcards:
-	//   - — matches exactly one token (between dots), e.g., "foo.*.bar" matches "foo.x.bar" but not "foo.x.y.bar"
-	//     >  — matches one or more tokens until the end, e.g., "foo.>" matches "foo", "foo.bar", "foo.bar.baz", etc.
+	//   - - matches exactly one token (between dots), e.g., "foo.*.bar" matches "foo.x.bar" but not "foo.x.y.bar"
+	//     >  - matches one or more tokens until the end, e.g., "foo.>" matches "foo", "foo.bar", "foo.bar.baz", etc.
 	//
 	// Multiple wildcards can be used in a single pattern. Tokens are dot-separated.
 	KeyPattern    []string `protobuf:"bytes,1,rep,name=key_pattern,json=keyPattern,proto3" json:"key_pattern,omitempty"`
