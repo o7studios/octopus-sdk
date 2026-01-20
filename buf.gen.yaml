@@ -3,10 +3,10 @@ version: v2
 plugins:
 
   - remote: buf.build/protocolbuffers/java
-    out: sdk/java/src/java
+    out: sdk/java/src/main/java
 
   - remote: buf.build/grpc/java
-    out: sdk/java/src/java
+    out: sdk/java/src/main/java
 
   - remote: buf.build/protocolbuffers/go
     out: sdk/go
