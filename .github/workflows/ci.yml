@@ -148,4 +148,4 @@ jobs:
           VERSION="${RAW_TAG#v}"
 
           [[ "$VERSION" =~ ^[0-9]+(\.[0-9]+)*$ ]] || exit -1
-          ./gradlew publishToCentralPortal -Pversion="$VERSION"
+          ./gradlew publishToCentralPortal -Pversion="$VERSION" --info --stacktrace
