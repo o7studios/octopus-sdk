@@ -16,7 +16,9 @@ service Octopus {
    * key pattern. Can optionally include expired (include all
    * revisions) objects and filter by creation time.
    */
-  rpc Get(GetRequest) returns (GetResponse);
+  rpc Query(QueryRequest) returns (QueryResponse);
+
+  rpc Get() returns ();
   /**
    * Stores an object on key.
    */
@@ -88,7 +90,7 @@ message Entry {
 /**
  * Filters and options for `Get` RPC.
  */
-message GetRequest {
+message QueryRequest {
   // Pattern to match keys. Supports wildcards:
   //   *  — matches exactly one token (between dots), e.g., "foo.*.bar" matches "foo.x.bar" but not "foo.x.y.bar"
   //   >  — matches one or more tokens until the end, e.g., "foo.>" matches "foo", "foo.bar", "foo.bar.baz", etc.
@@ -109,6 +111,23 @@ message GetRequest {
 
   // Entry paginator
   Paginator paginator = 6;
+}
+
+/**
+ * For getting an exact value to a key you already have
+ */
+message GetRequest {
+  // Exact key to a object
+  string key = 1;
+}
+
+message GetResponse {
+  oneof result {
+    // If the key points only to one value it will be returned
+    Object object = 1;
+    // If multiple or none objects were found it returns empty
+    google.protobuf.Empty empty = 2;
+  }
 }
 
 /**
@@ -136,7 +155,7 @@ message PageInfo {
 /**
  * Result of `Get` RPC.
  */
-message GetResponse {
+message QueryResponse {
   // List of found entries including revision, ID and timestamps.
   repeated Entry entries = 1;
 
