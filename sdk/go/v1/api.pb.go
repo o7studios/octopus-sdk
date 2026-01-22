@@ -400,7 +400,7 @@ type GetResponse_Object struct {
 }
 
 type GetResponse_Empty struct {
-	// If multiple or none objects were found it returns empty
+	// If no object is found for the provided key, an empty response is returned.
 	Empty *emptypb.Empty `protobuf:"bytes,2,opt,name=empty,proto3,oneof"`
 }
 
