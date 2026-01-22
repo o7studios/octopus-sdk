@@ -182,8 +182,8 @@ func (x *Entry) GetId() string {
 }
 
 // *
-// Filters and options for `Get` RPC.
-type GetRequest struct {
+// Filters and options for `Query` RPC.
+type QueryRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Pattern to match keys. Supports wildcards:
 	//   - — matches exactly one token (between dots), e.g., "foo.*.bar" matches "foo.x.bar" but not "foo.x.y.bar"
@@ -205,9 +205,91 @@ type GetRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
+func (x *QueryRequest) Reset() {
+	*x = QueryRequest{}
+	mi := &file_v1_api_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *QueryRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryRequest) ProtoMessage() {}
+
+func (x *QueryRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_v1_api_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use QueryRequest.ProtoReflect.Descriptor instead.
+func (*QueryRequest) Descriptor() ([]byte, []int) {
+	return file_v1_api_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *QueryRequest) GetKeyPattern() string {
+	if x != nil {
+		return x.KeyPattern
+	}
+	return ""
+}
+
+func (x *QueryRequest) GetIncludeExpired() bool {
+	if x != nil && x.IncludeExpired != nil {
+		return *x.IncludeExpired
+	}
+	return false
+}
+
+func (x *QueryRequest) GetCreatedAtRangeStart() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAtRangeStart
+	}
+	return nil
+}
+
+func (x *QueryRequest) GetCreatedAtRangeEnd() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAtRangeEnd
+	}
+	return nil
+}
+
+func (x *QueryRequest) GetDataFilter() string {
+	if x != nil && x.DataFilter != nil {
+		return *x.DataFilter
+	}
+	return ""
+}
+
+func (x *QueryRequest) GetPaginator() *Paginator {
+	if x != nil {
+		return x.Paginator
+	}
+	return nil
+}
+
+// *
+// For getting an exact value to a key you already have
+type GetRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Exact key to a object
+	Key           string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
 func (x *GetRequest) Reset() {
 	*x = GetRequest{}
-	mi := &file_v1_api_proto_msgTypes[2]
+	mi := &file_v1_api_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -219,7 +301,7 @@ func (x *GetRequest) String() string {
 func (*GetRequest) ProtoMessage() {}
 
 func (x *GetRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_api_proto_msgTypes[2]
+	mi := &file_v1_api_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -232,50 +314,99 @@ func (x *GetRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRequest.ProtoReflect.Descriptor instead.
 func (*GetRequest) Descriptor() ([]byte, []int) {
-	return file_v1_api_proto_rawDescGZIP(), []int{2}
+	return file_v1_api_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *GetRequest) GetKeyPattern() string {
+func (x *GetRequest) GetKey() string {
 	if x != nil {
-		return x.KeyPattern
+		return x.Key
 	}
 	return ""
 }
 
-func (x *GetRequest) GetIncludeExpired() bool {
-	if x != nil && x.IncludeExpired != nil {
-		return *x.IncludeExpired
-	}
-	return false
+type GetResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Types that are valid to be assigned to Result:
+	//
+	//	*GetResponse_Object
+	//	*GetResponse_Empty
+	Result        isGetResponse_Result `protobuf_oneof:"result"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetRequest) GetCreatedAtRangeStart() *timestamppb.Timestamp {
+func (x *GetResponse) Reset() {
+	*x = GetResponse{}
+	mi := &file_v1_api_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetResponse) ProtoMessage() {}
+
+func (x *GetResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_v1_api_proto_msgTypes[4]
 	if x != nil {
-		return x.CreatedAtRangeStart
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetResponse.ProtoReflect.Descriptor instead.
+func (*GetResponse) Descriptor() ([]byte, []int) {
+	return file_v1_api_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetResponse) GetResult() isGetResponse_Result {
+	if x != nil {
+		return x.Result
 	}
 	return nil
 }
 
-func (x *GetRequest) GetCreatedAtRangeEnd() *timestamppb.Timestamp {
+func (x *GetResponse) GetObject() *Object {
 	if x != nil {
-		return x.CreatedAtRangeEnd
+		if x, ok := x.Result.(*GetResponse_Object); ok {
+			return x.Object
+		}
 	}
 	return nil
 }
 
-func (x *GetRequest) GetDataFilter() string {
-	if x != nil && x.DataFilter != nil {
-		return *x.DataFilter
-	}
-	return ""
-}
-
-func (x *GetRequest) GetPaginator() *Paginator {
+func (x *GetResponse) GetEmpty() *emptypb.Empty {
 	if x != nil {
-		return x.Paginator
+		if x, ok := x.Result.(*GetResponse_Empty); ok {
+			return x.Empty
+		}
 	}
 	return nil
 }
+
+type isGetResponse_Result interface {
+	isGetResponse_Result()
+}
+
+type GetResponse_Object struct {
+	// If the key points only to one value it will be returned
+	Object *Object `protobuf:"bytes,1,opt,name=object,proto3,oneof"`
+}
+
+type GetResponse_Empty struct {
+	// If no object is found for the given key, this field is set
+	Empty *emptypb.Empty `protobuf:"bytes,2,opt,name=empty,proto3,oneof"`
+}
+
+func (*GetResponse_Object) isGetResponse_Result() {}
+
+func (*GetResponse_Empty) isGetResponse_Result() {}
 
 // *
 // Paginator for database entry cursor-pagination.
@@ -291,7 +422,7 @@ type Paginator struct {
 
 func (x *Paginator) Reset() {
 	*x = Paginator{}
-	mi := &file_v1_api_proto_msgTypes[3]
+	mi := &file_v1_api_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -303,7 +434,7 @@ func (x *Paginator) String() string {
 func (*Paginator) ProtoMessage() {}
 
 func (x *Paginator) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_api_proto_msgTypes[3]
+	mi := &file_v1_api_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -316,7 +447,7 @@ func (x *Paginator) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Paginator.ProtoReflect.Descriptor instead.
 func (*Paginator) Descriptor() ([]byte, []int) {
-	return file_v1_api_proto_rawDescGZIP(), []int{3}
+	return file_v1_api_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *Paginator) GetPage() int32 {
@@ -347,7 +478,7 @@ type PageInfo struct {
 
 func (x *PageInfo) Reset() {
 	*x = PageInfo{}
-	mi := &file_v1_api_proto_msgTypes[4]
+	mi := &file_v1_api_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -359,7 +490,7 @@ func (x *PageInfo) String() string {
 func (*PageInfo) ProtoMessage() {}
 
 func (x *PageInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_api_proto_msgTypes[4]
+	mi := &file_v1_api_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -372,7 +503,7 @@ func (x *PageInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PageInfo.ProtoReflect.Descriptor instead.
 func (*PageInfo) Descriptor() ([]byte, []int) {
-	return file_v1_api_proto_rawDescGZIP(), []int{4}
+	return file_v1_api_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *PageInfo) GetCurrentPage() int32 {
@@ -418,8 +549,8 @@ func (x *PageInfo) GetPrevPage() int32 {
 }
 
 // *
-// Result of `Get` RPC.
-type GetResponse struct {
+// Result of `Query` RPC.
+type QueryResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// List of found entries including revision, ID and timestamps.
 	Entries []*Entry `protobuf:"bytes,1,rep,name=entries,proto3" json:"entries,omitempty"`
@@ -429,21 +560,21 @@ type GetResponse struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetResponse) Reset() {
-	*x = GetResponse{}
-	mi := &file_v1_api_proto_msgTypes[5]
+func (x *QueryResponse) Reset() {
+	*x = QueryResponse{}
+	mi := &file_v1_api_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetResponse) String() string {
+func (x *QueryResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetResponse) ProtoMessage() {}
+func (*QueryResponse) ProtoMessage() {}
 
-func (x *GetResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_api_proto_msgTypes[5]
+func (x *QueryResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_v1_api_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -454,19 +585,19 @@ func (x *GetResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetResponse.ProtoReflect.Descriptor instead.
-func (*GetResponse) Descriptor() ([]byte, []int) {
-	return file_v1_api_proto_rawDescGZIP(), []int{5}
+// Deprecated: Use QueryResponse.ProtoReflect.Descriptor instead.
+func (*QueryResponse) Descriptor() ([]byte, []int) {
+	return file_v1_api_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *GetResponse) GetEntries() []*Entry {
+func (x *QueryResponse) GetEntries() []*Entry {
 	if x != nil {
 		return x.Entries
 	}
 	return nil
 }
 
-func (x *GetResponse) GetPageInfo() *PageInfo {
+func (x *QueryResponse) GetPageInfo() *PageInfo {
 	if x != nil {
 		return x.PageInfo
 	}
@@ -489,7 +620,7 @@ type ListenMessage struct {
 
 func (x *ListenMessage) Reset() {
 	*x = ListenMessage{}
-	mi := &file_v1_api_proto_msgTypes[6]
+	mi := &file_v1_api_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -501,7 +632,7 @@ func (x *ListenMessage) String() string {
 func (*ListenMessage) ProtoMessage() {}
 
 func (x *ListenMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_api_proto_msgTypes[6]
+	mi := &file_v1_api_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -514,7 +645,7 @@ func (x *ListenMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListenMessage.ProtoReflect.Descriptor instead.
 func (*ListenMessage) Descriptor() ([]byte, []int) {
-	return file_v1_api_proto_rawDescGZIP(), []int{6}
+	return file_v1_api_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *ListenMessage) GetKeyPattern() []string {
@@ -538,7 +669,7 @@ type EventCall struct {
 
 func (x *EventCall) Reset() {
 	*x = EventCall{}
-	mi := &file_v1_api_proto_msgTypes[7]
+	mi := &file_v1_api_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -550,7 +681,7 @@ func (x *EventCall) String() string {
 func (*EventCall) ProtoMessage() {}
 
 func (x *EventCall) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_api_proto_msgTypes[7]
+	mi := &file_v1_api_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -563,7 +694,7 @@ func (x *EventCall) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EventCall.ProtoReflect.Descriptor instead.
 func (*EventCall) Descriptor() ([]byte, []int) {
-	return file_v1_api_proto_rawDescGZIP(), []int{7}
+	return file_v1_api_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *EventCall) GetObject() *Object {
@@ -600,9 +731,8 @@ const file_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12\x1a\n" +
 	"\brevision\x18\x03 \x01(\x03R\brevision\x12\x0e\n" +
-	"\x02id\x18\x04 \x01(\tR\x02id\"\xba\x03\n" +
-	"\n" +
-	"GetRequest\x12\x1f\n" +
+	"\x02id\x18\x04 \x01(\tR\x02id\"\xbc\x03\n" +
+	"\fQueryRequest\x12\x1f\n" +
 	"\vkey_pattern\x18\x01 \x01(\tR\n" +
 	"keyPattern\x12,\n" +
 	"\x0finclude_expired\x18\x02 \x01(\bH\x00R\x0eincludeExpired\x88\x01\x01\x12T\n" +
@@ -614,7 +744,14 @@ const file_v1_api_proto_rawDesc = "" +
 	"\x10_include_expiredB\x19\n" +
 	"\x17_created_at_range_startB\x17\n" +
 	"\x15_created_at_range_endB\x0e\n" +
-	"\f_data_filter\"<\n" +
+	"\f_data_filter\"\x1e\n" +
+	"\n" +
+	"GetRequest\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\"y\n" +
+	"\vGetResponse\x120\n" +
+	"\x06object\x18\x01 \x01(\v2\x16.octopus_sdk.v1.ObjectH\x00R\x06object\x12.\n" +
+	"\x05empty\x18\x02 \x01(\v2\x16.google.protobuf.EmptyH\x00R\x05emptyB\b\n" +
+	"\x06result\"<\n" +
 	"\tPaginator\x12\x12\n" +
 	"\x04page\x18\x01 \x01(\x05R\x04page\x12\x1b\n" +
 	"\tpage_size\x18\x02 \x01(\x05R\bpageSize\"\xfb\x01\n" +
@@ -630,8 +767,8 @@ const file_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"_next_pageB\f\n" +
 	"\n" +
-	"_prev_page\"u\n" +
-	"\vGetResponse\x12/\n" +
+	"_prev_page\"w\n" +
+	"\rQueryResponse\x12/\n" +
 	"\aentries\x18\x01 \x03(\v2\x15.octopus_sdk.v1.EntryR\aentries\x125\n" +
 	"\tpage_info\x18\x02 \x01(\v2\x18.octopus_sdk.v1.PageInfoR\bpageInfo\"0\n" +
 	"\rListenMessage\x12\x1f\n" +
@@ -639,8 +776,9 @@ const file_v1_api_proto_rawDesc = "" +
 	"keyPattern\"T\n" +
 	"\tEventCall\x12.\n" +
 	"\x06object\x18\x01 \x01(\v2\x16.octopus_sdk.v1.ObjectR\x06object\x12\x17\n" +
-	"\acall_id\x18\x02 \x01(\tR\x06callId2\x81\x02\n" +
-	"\aOctopus\x12>\n" +
+	"\acall_id\x18\x02 \x01(\tR\x06callId2\xc7\x02\n" +
+	"\aOctopus\x12D\n" +
+	"\x05Query\x12\x1c.octopus_sdk.v1.QueryRequest\x1a\x1d.octopus_sdk.v1.QueryResponse\x12>\n" +
 	"\x03Get\x12\x1a.octopus_sdk.v1.GetRequest\x1a\x1b.octopus_sdk.v1.GetResponse\x127\n" +
 	"\x05Write\x12\x16.octopus_sdk.v1.Object\x1a\x16.google.protobuf.Empty\x125\n" +
 	"\x04Call\x12\x16.octopus_sdk.v1.Object\x1a\x15.octopus_sdk.v1.Entry\x12F\n" +
@@ -659,45 +797,51 @@ func file_v1_api_proto_rawDescGZIP() []byte {
 	return file_v1_api_proto_rawDescData
 }
 
-var file_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_v1_api_proto_goTypes = []any{
 	(*Object)(nil),                // 0: octopus_sdk.v1.Object
 	(*Entry)(nil),                 // 1: octopus_sdk.v1.Entry
-	(*GetRequest)(nil),            // 2: octopus_sdk.v1.GetRequest
-	(*Paginator)(nil),             // 3: octopus_sdk.v1.Paginator
-	(*PageInfo)(nil),              // 4: octopus_sdk.v1.PageInfo
-	(*GetResponse)(nil),           // 5: octopus_sdk.v1.GetResponse
-	(*ListenMessage)(nil),         // 6: octopus_sdk.v1.ListenMessage
-	(*EventCall)(nil),             // 7: octopus_sdk.v1.EventCall
-	(*structpb.Struct)(nil),       // 8: google.protobuf.Struct
-	(*timestamppb.Timestamp)(nil), // 9: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),         // 10: google.protobuf.Empty
+	(*QueryRequest)(nil),          // 2: octopus_sdk.v1.QueryRequest
+	(*GetRequest)(nil),            // 3: octopus_sdk.v1.GetRequest
+	(*GetResponse)(nil),           // 4: octopus_sdk.v1.GetResponse
+	(*Paginator)(nil),             // 5: octopus_sdk.v1.Paginator
+	(*PageInfo)(nil),              // 6: octopus_sdk.v1.PageInfo
+	(*QueryResponse)(nil),         // 7: octopus_sdk.v1.QueryResponse
+	(*ListenMessage)(nil),         // 8: octopus_sdk.v1.ListenMessage
+	(*EventCall)(nil),             // 9: octopus_sdk.v1.EventCall
+	(*structpb.Struct)(nil),       // 10: google.protobuf.Struct
+	(*timestamppb.Timestamp)(nil), // 11: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),         // 12: google.protobuf.Empty
 }
 var file_v1_api_proto_depIdxs = []int32{
-	8,  // 0: octopus_sdk.v1.Object.data:type_name -> google.protobuf.Struct
-	9,  // 1: octopus_sdk.v1.Object.expired_at:type_name -> google.protobuf.Timestamp
-	9,  // 2: octopus_sdk.v1.Object.deleted_at:type_name -> google.protobuf.Timestamp
+	10, // 0: octopus_sdk.v1.Object.data:type_name -> google.protobuf.Struct
+	11, // 1: octopus_sdk.v1.Object.expired_at:type_name -> google.protobuf.Timestamp
+	11, // 2: octopus_sdk.v1.Object.deleted_at:type_name -> google.protobuf.Timestamp
 	0,  // 3: octopus_sdk.v1.Entry.object:type_name -> octopus_sdk.v1.Object
-	9,  // 4: octopus_sdk.v1.Entry.created_at:type_name -> google.protobuf.Timestamp
-	9,  // 5: octopus_sdk.v1.GetRequest.created_at_range_start:type_name -> google.protobuf.Timestamp
-	9,  // 6: octopus_sdk.v1.GetRequest.created_at_range_end:type_name -> google.protobuf.Timestamp
-	3,  // 7: octopus_sdk.v1.GetRequest.paginator:type_name -> octopus_sdk.v1.Paginator
-	1,  // 8: octopus_sdk.v1.GetResponse.entries:type_name -> octopus_sdk.v1.Entry
-	4,  // 9: octopus_sdk.v1.GetResponse.page_info:type_name -> octopus_sdk.v1.PageInfo
-	0,  // 10: octopus_sdk.v1.EventCall.object:type_name -> octopus_sdk.v1.Object
-	2,  // 11: octopus_sdk.v1.Octopus.Get:input_type -> octopus_sdk.v1.GetRequest
-	0,  // 12: octopus_sdk.v1.Octopus.Write:input_type -> octopus_sdk.v1.Object
-	0,  // 13: octopus_sdk.v1.Octopus.Call:input_type -> octopus_sdk.v1.Object
-	6,  // 14: octopus_sdk.v1.Octopus.Listen:input_type -> octopus_sdk.v1.ListenMessage
-	5,  // 15: octopus_sdk.v1.Octopus.Get:output_type -> octopus_sdk.v1.GetResponse
-	10, // 16: octopus_sdk.v1.Octopus.Write:output_type -> google.protobuf.Empty
-	1,  // 17: octopus_sdk.v1.Octopus.Call:output_type -> octopus_sdk.v1.Entry
-	7,  // 18: octopus_sdk.v1.Octopus.Listen:output_type -> octopus_sdk.v1.EventCall
-	15, // [15:19] is the sub-list for method output_type
-	11, // [11:15] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	11, // 4: octopus_sdk.v1.Entry.created_at:type_name -> google.protobuf.Timestamp
+	11, // 5: octopus_sdk.v1.QueryRequest.created_at_range_start:type_name -> google.protobuf.Timestamp
+	11, // 6: octopus_sdk.v1.QueryRequest.created_at_range_end:type_name -> google.protobuf.Timestamp
+	5,  // 7: octopus_sdk.v1.QueryRequest.paginator:type_name -> octopus_sdk.v1.Paginator
+	0,  // 8: octopus_sdk.v1.GetResponse.object:type_name -> octopus_sdk.v1.Object
+	12, // 9: octopus_sdk.v1.GetResponse.empty:type_name -> google.protobuf.Empty
+	1,  // 10: octopus_sdk.v1.QueryResponse.entries:type_name -> octopus_sdk.v1.Entry
+	6,  // 11: octopus_sdk.v1.QueryResponse.page_info:type_name -> octopus_sdk.v1.PageInfo
+	0,  // 12: octopus_sdk.v1.EventCall.object:type_name -> octopus_sdk.v1.Object
+	2,  // 13: octopus_sdk.v1.Octopus.Query:input_type -> octopus_sdk.v1.QueryRequest
+	3,  // 14: octopus_sdk.v1.Octopus.Get:input_type -> octopus_sdk.v1.GetRequest
+	0,  // 15: octopus_sdk.v1.Octopus.Write:input_type -> octopus_sdk.v1.Object
+	0,  // 16: octopus_sdk.v1.Octopus.Call:input_type -> octopus_sdk.v1.Object
+	8,  // 17: octopus_sdk.v1.Octopus.Listen:input_type -> octopus_sdk.v1.ListenMessage
+	7,  // 18: octopus_sdk.v1.Octopus.Query:output_type -> octopus_sdk.v1.QueryResponse
+	4,  // 19: octopus_sdk.v1.Octopus.Get:output_type -> octopus_sdk.v1.GetResponse
+	12, // 20: octopus_sdk.v1.Octopus.Write:output_type -> google.protobuf.Empty
+	1,  // 21: octopus_sdk.v1.Octopus.Call:output_type -> octopus_sdk.v1.Entry
+	9,  // 22: octopus_sdk.v1.Octopus.Listen:output_type -> octopus_sdk.v1.EventCall
+	18, // [18:23] is the sub-list for method output_type
+	13, // [13:18] is the sub-list for method input_type
+	13, // [13:13] is the sub-list for extension type_name
+	13, // [13:13] is the sub-list for extension extendee
+	0,  // [0:13] is the sub-list for field type_name
 }
 
 func init() { file_v1_api_proto_init() }
@@ -707,14 +851,18 @@ func file_v1_api_proto_init() {
 	}
 	file_v1_api_proto_msgTypes[0].OneofWrappers = []any{}
 	file_v1_api_proto_msgTypes[2].OneofWrappers = []any{}
-	file_v1_api_proto_msgTypes[4].OneofWrappers = []any{}
+	file_v1_api_proto_msgTypes[4].OneofWrappers = []any{
+		(*GetResponse_Object)(nil),
+		(*GetResponse_Empty)(nil),
+	}
+	file_v1_api_proto_msgTypes[6].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_v1_api_proto_rawDesc), len(file_v1_api_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

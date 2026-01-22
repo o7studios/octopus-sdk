@@ -20,6 +20,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	Octopus_Query_FullMethodName  = "/octopus_sdk.v1.Octopus/Query"
 	Octopus_Get_FullMethodName    = "/octopus_sdk.v1.Octopus/Get"
 	Octopus_Write_FullMethodName  = "/octopus_sdk.v1.Octopus/Write"
 	Octopus_Call_FullMethodName   = "/octopus_sdk.v1.Octopus/Call"
@@ -34,6 +35,9 @@ type OctopusClient interface {
 	// Retrieves existing entries from the database matching a
 	// key pattern. Can optionally include expired (include all
 	// revisions) objects and filter by creation time.
+	Query(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error)
+	// *
+	// Retrieves only one existing entry from the database matching a key.
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	// *
 	// Stores an object on key.
@@ -69,6 +73,16 @@ type octopusClient struct {
 
 func NewOctopusClient(cc grpc.ClientConnInterface) OctopusClient {
 	return &octopusClient{cc}
+}
+
+func (c *octopusClient) Query(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(QueryResponse)
+	err := c.cc.Invoke(ctx, Octopus_Query_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *octopusClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error) {
@@ -122,6 +136,9 @@ type OctopusServer interface {
 	// Retrieves existing entries from the database matching a
 	// key pattern. Can optionally include expired (include all
 	// revisions) objects and filter by creation time.
+	Query(context.Context, *QueryRequest) (*QueryResponse, error)
+	// *
+	// Retrieves only one existing entry from the database matching a key.
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	// *
 	// Stores an object on key.
@@ -159,6 +176,9 @@ type OctopusServer interface {
 // pointer dereference when methods are called.
 type UnimplementedOctopusServer struct{}
 
+func (UnimplementedOctopusServer) Query(context.Context, *QueryRequest) (*QueryResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Query not implemented")
+}
 func (UnimplementedOctopusServer) Get(context.Context, *GetRequest) (*GetResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Get not implemented")
 }
@@ -190,6 +210,24 @@ func RegisterOctopusServer(s grpc.ServiceRegistrar, srv OctopusServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&Octopus_ServiceDesc, srv)
+}
+
+func _Octopus_Query_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OctopusServer).Query(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Octopus_Query_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OctopusServer).Query(ctx, req.(*QueryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Octopus_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -260,6 +298,10 @@ var Octopus_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "octopus_sdk.v1.Octopus",
 	HandlerType: (*OctopusServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Query",
+			Handler:    _Octopus_Query_Handler,
+		},
 		{
 			MethodName: "Get",
 			Handler:    _Octopus_Get_Handler,
