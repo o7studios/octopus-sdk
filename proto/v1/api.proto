@@ -17,8 +17,10 @@ service Octopus {
    * revisions) objects and filter by creation time.
    */
   rpc Query(QueryRequest) returns (QueryResponse);
-
-  rpc Get() returns ();
+  /**
+   * Retrieves only one existing entry from the database matching a key.
+   */
+  rpc Get(GetRequest) returns (GetResponse);
   /**
    * Stores an object on key.
    */
