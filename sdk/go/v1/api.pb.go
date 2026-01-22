@@ -549,7 +549,7 @@ func (x *PageInfo) GetPrevPage() int32 {
 }
 
 // *
-// Result of `Get` RPC.
+// Result of `Query` RPC.
 type QueryResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// List of found entries including revision, ID and timestamps.
