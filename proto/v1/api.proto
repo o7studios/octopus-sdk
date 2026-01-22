@@ -90,7 +90,7 @@ message Entry {
 }
 
 /**
- * Filters and options for `Get` RPC.
+ * Filters and options for `Query` RPC.
  */
 message QueryRequest {
   // Pattern to match keys. Supports wildcards:
