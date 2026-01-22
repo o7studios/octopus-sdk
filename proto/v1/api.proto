@@ -155,7 +155,7 @@ message PageInfo {
 }
 
 /**
- * Result of `Get` RPC.
+ * Result of `Query` RPC.
  */
 message QueryResponse {
   // List of found entries including revision, ID and timestamps.
