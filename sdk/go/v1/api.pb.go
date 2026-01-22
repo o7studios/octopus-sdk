@@ -182,7 +182,7 @@ func (x *Entry) GetId() string {
 }
 
 // *
-// Filters and options for `Get` RPC.
+// Filters and options for `Query` RPC.
 type QueryRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Pattern to match keys. Supports wildcards:
