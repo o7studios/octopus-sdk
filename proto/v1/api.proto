@@ -127,7 +127,7 @@ message GetResponse {
   oneof result {
     // If the key points only to one value it will be returned
     Object object = 1;
-    // If multiple or none objects were found it returns empty
+    // If no object is found for the given key, this field is set
     google.protobuf.Empty empty = 2;
   }
 }
