@@ -7,7 +7,7 @@ dependencyResolutionManagement {
         create("libs") {
             version("grpc", "1.78.0")
             version("googleProtobuf", "4.29.0")
-            version("googleProto", "2.64.1")
+            version("googleProto", "2.65.0")
             version("javax", "1.3.2")
             version ("gson", "2.13.2")
 
