@@ -197,10 +197,12 @@ type QueryRequest struct {
 	CreatedAtRangeStart *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=created_at_range_start,json=createdAtRangeStart,proto3,oneof" json:"created_at_range_start,omitempty"`
 	// End timestamp to filter creation time.
 	CreatedAtRangeEnd *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=created_at_range_end,json=createdAtRangeEnd,proto3,oneof" json:"created_at_range_end,omitempty"`
-	// Filter by json in data in MongoDB filter similar pattern
+	// Filter by json (use MongoDB filter pattern)
 	DataFilter *string `protobuf:"bytes,5,opt,name=data_filter,json=dataFilter,proto3,oneof" json:"data_filter,omitempty"`
+	// Sort by json (use MongoDB sort pattern)
+	DataSort *string `protobuf:"bytes,6,opt,name=data_sort,json=dataSort,proto3,oneof" json:"data_sort,omitempty"`
 	// Entry paginator
-	Paginator     *Paginator `protobuf:"bytes,6,opt,name=paginator,proto3" json:"paginator,omitempty"`
+	Paginator     *Paginator `protobuf:"bytes,7,opt,name=paginator,proto3" json:"paginator,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -266,6 +268,13 @@ func (x *QueryRequest) GetCreatedAtRangeEnd() *timestamppb.Timestamp {
 func (x *QueryRequest) GetDataFilter() string {
 	if x != nil && x.DataFilter != nil {
 		return *x.DataFilter
+	}
+	return ""
+}
+
+func (x *QueryRequest) GetDataSort() string {
+	if x != nil && x.DataSort != nil {
+		return *x.DataSort
 	}
 	return ""
 }
@@ -731,7 +740,7 @@ const file_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12\x1a\n" +
 	"\brevision\x18\x03 \x01(\x03R\brevision\x12\x0e\n" +
-	"\x02id\x18\x04 \x01(\tR\x02id\"\xbc\x03\n" +
+	"\x02id\x18\x04 \x01(\tR\x02id\"\xec\x03\n" +
 	"\fQueryRequest\x12\x1f\n" +
 	"\vkey_pattern\x18\x01 \x01(\tR\n" +
 	"keyPattern\x12,\n" +
@@ -739,12 +748,15 @@ const file_v1_api_proto_rawDesc = "" +
 	"\x16created_at_range_start\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampH\x01R\x13createdAtRangeStart\x88\x01\x01\x12P\n" +
 	"\x14created_at_range_end\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampH\x02R\x11createdAtRangeEnd\x88\x01\x01\x12$\n" +
 	"\vdata_filter\x18\x05 \x01(\tH\x03R\n" +
-	"dataFilter\x88\x01\x01\x127\n" +
-	"\tpaginator\x18\x06 \x01(\v2\x19.octopus_sdk.v1.PaginatorR\tpaginatorB\x12\n" +
+	"dataFilter\x88\x01\x01\x12 \n" +
+	"\tdata_sort\x18\x06 \x01(\tH\x04R\bdataSort\x88\x01\x01\x127\n" +
+	"\tpaginator\x18\a \x01(\v2\x19.octopus_sdk.v1.PaginatorR\tpaginatorB\x12\n" +
 	"\x10_include_expiredB\x19\n" +
 	"\x17_created_at_range_startB\x17\n" +
 	"\x15_created_at_range_endB\x0e\n" +
-	"\f_data_filter\"\x1e\n" +
+	"\f_data_filterB\f\n" +
+	"\n" +
+	"_data_sort\"\x1e\n" +
 	"\n" +
 	"GetRequest\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\"y\n" +

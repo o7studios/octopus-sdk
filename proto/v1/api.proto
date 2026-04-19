@@ -108,11 +108,14 @@ message QueryRequest {
   // End timestamp to filter creation time.
   optional google.protobuf.Timestamp created_at_range_end = 4;
 
-  // Filter by json in data in MongoDB filter similar pattern
+  // Filter by json (use MongoDB filter pattern)
   optional string data_filter = 5;
 
+  // Sort by json (use MongoDB sort pattern)
+  optional string data_sort = 6;
+
   // Entry paginator
-  Paginator paginator = 6;
+  Paginator paginator = 7;
 }
 
 /**
