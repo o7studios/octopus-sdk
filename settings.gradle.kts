@@ -9,7 +9,7 @@ dependencyResolutionManagement {
             version("googleProtobuf", "4.29.0")
             version("googleProto", "2.67.0")
             version("javax", "1.3.2")
-            version ("gson", "2.13.2")
+            version ("gson", "2.14.0")
 
             library("javax", "javax.annotation", "javax.annotation-api").versionRef("javax")
 
