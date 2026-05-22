@@ -53,7 +53,7 @@ service Octopus {
 }
 
 enum PersistanceTarget {
-  UNKOWN = 0;
+  UNKNOWN = 0;
   PERMANENT = 1;
   CACHED = 2;
 }
