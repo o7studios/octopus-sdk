@@ -126,11 +126,11 @@ message QueryRequest {
   // Entry paginator
   Paginator paginator = 7;
 
-  // Optional persistance target:
-  // Location of entry lookup:
+  // Optional persistence target.
+  // Selects where the entries are looked up from:
   // UNKOWN => request will be rejected
-  // PERMANENT => will be saved inside the MongoDB (default)
-  // CACHED => will be saved inside NATS
+  // PERMANENT => will be looked up inside MongoDB (default)
+  // CACHED => will be looked up inside NATS
   optional PersistanceTarget target = 8;
 }
 
