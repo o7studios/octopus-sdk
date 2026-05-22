@@ -261,11 +261,11 @@ type QueryRequest struct {
 	DataSort *string `protobuf:"bytes,6,opt,name=data_sort,json=dataSort,proto3,oneof" json:"data_sort,omitempty"`
 	// Entry paginator
 	Paginator *Paginator `protobuf:"bytes,7,opt,name=paginator,proto3" json:"paginator,omitempty"`
-	// Optional persistance target:
-	// Location of entry lookup:
+	// Optional persistence target.
+	// Selects where the entries are looked up from:
 	// UNKOWN => request will be rejected
-	// PERMANENT => will be saved inside the MongoDB (default)
-	// CACHED => will be saved inside NATS
+	// PERMANENT => will be looked up inside MongoDB (default)
+	// CACHED => will be looked up inside NATS
 	Target        *PersistanceTarget `protobuf:"varint,8,opt,name=target,proto3,enum=octopus_sdk.v1.PersistanceTarget,oneof" json:"target,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
