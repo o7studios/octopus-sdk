@@ -52,6 +52,12 @@ service Octopus {
   rpc Listen(stream ListenMessage) returns(stream EventCall);
 }
 
+enum PersistanceTarget {
+  UNKOWN = 0;
+  PERMANENT = 1;
+  CACHED = 2;
+}
+
 /**
  * Represents a flexible data object.
  */
@@ -70,10 +76,13 @@ message Object {
 
   // Timestamp when the object should be permanently deleted.
   optional google.protobuf.Timestamp deleted_at = 5;
+
+  // Optional target for persistance. If not set: default = permanent
+  optional PersistanceTarget target = 6;
 }
 
 /**
- * A versioned object with metadata from database.
+ * A versioned object with metadata from database/cache.
  */
 message Entry {
   // The underlying object.
@@ -116,6 +125,13 @@ message QueryRequest {
 
   // Entry paginator
   Paginator paginator = 7;
+
+  // Optional persistance target:
+  // Location of entry lookup:
+  // UNKOWN => request will be rejected
+  // PERMANENT => will be saved inside the MongoDB (default)
+  // CACHED => will be saved inside NATS
+  optional PersistanceTarget target = 8;
 }
 
 /**
@@ -124,6 +140,12 @@ message QueryRequest {
 message GetRequest {
   // Exact key to a object
   string key = 1;
+  // Optional persistance target:
+  // Location of entry lookup:
+  // UNKOWN => request will be rejected
+  // PERMANENT => will be saved inside the MongoDB (default)
+  // CACHED => will be saved inside NATS
+  optional PersistanceTarget target = 8;
 }
 
 message GetResponse {
