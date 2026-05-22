@@ -27,7 +27,7 @@ const (
 type PersistanceTarget int32
 
 const (
-	PersistanceTarget_UNKOWN    PersistanceTarget = 0
+	PersistanceTarget_UNKNOWN   PersistanceTarget = 0
 	PersistanceTarget_PERMANENT PersistanceTarget = 1
 	PersistanceTarget_CACHED    PersistanceTarget = 2
 )
@@ -35,12 +35,12 @@ const (
 // Enum value maps for PersistanceTarget.
 var (
 	PersistanceTarget_name = map[int32]string{
-		0: "UNKOWN",
+		0: "UNKNOWN",
 		1: "PERMANENT",
 		2: "CACHED",
 	}
 	PersistanceTarget_value = map[string]int32{
-		"UNKOWN":    0,
+		"UNKNOWN":   0,
 		"PERMANENT": 1,
 		"CACHED":    2,
 	}
@@ -162,7 +162,7 @@ func (x *Object) GetTarget() PersistanceTarget {
 	if x != nil && x.Target != nil {
 		return *x.Target
 	}
-	return PersistanceTarget_UNKOWN
+	return PersistanceTarget_UNKNOWN
 }
 
 // *
@@ -354,7 +354,7 @@ func (x *QueryRequest) GetTarget() PersistanceTarget {
 	if x != nil && x.Target != nil {
 		return *x.Target
 	}
-	return PersistanceTarget_UNKOWN
+	return PersistanceTarget_UNKNOWN
 }
 
 // *
@@ -414,7 +414,7 @@ func (x *GetRequest) GetTarget() PersistanceTarget {
 	if x != nil && x.Target != nil {
 		return *x.Target
 	}
-	return PersistanceTarget_UNKOWN
+	return PersistanceTarget_UNKNOWN
 }
 
 type GetResponse struct {
@@ -878,10 +878,9 @@ const file_v1_api_proto_rawDesc = "" +
 	"keyPattern\"T\n" +
 	"\tEventCall\x12.\n" +
 	"\x06object\x18\x01 \x01(\v2\x16.octopus_sdk.v1.ObjectR\x06object\x12\x17\n" +
-	"\acall_id\x18\x02 \x01(\tR\x06callId*:\n" +
-	"\x11PersistanceTarget\x12\n" +
-	"\n" +
-	"\x06UNKOWN\x10\x00\x12\r\n" +
+	"\acall_id\x18\x02 \x01(\tR\x06callId*;\n" +
+	"\x11PersistanceTarget\x12\v\n" +
+	"\aUNKNOWN\x10\x00\x12\r\n" +
 	"\tPERMANENT\x10\x01\x12\n" +
 	"\n" +
 	"\x06CACHED\x10\x022\xc7\x02\n" +
