@@ -263,7 +263,7 @@ type QueryRequest struct {
 	Paginator *Paginator `protobuf:"bytes,7,opt,name=paginator,proto3" json:"paginator,omitempty"`
 	// Optional persistence target.
 	// Selects where the entries are looked up from:
-	// UNKOWN => request will be rejected
+	// UNKNOWN => request will be rejected
 	// PERMANENT => will be looked up inside MongoDB (default)
 	// CACHED => will be looked up inside NATS
 	Target        *PersistanceTarget `protobuf:"varint,8,opt,name=target,proto3,enum=octopus_sdk.v1.PersistanceTarget,oneof" json:"target,omitempty"`
@@ -365,7 +365,7 @@ type GetRequest struct {
 	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
 	// Optional persistance target:
 	// Location of entry lookup:
-	// UNKOWN => request will be rejected
+	// UNKNOWN => request will be rejected
 	// PERMANENT => will be saved inside the MongoDB (default)
 	// CACHED => will be saved inside NATS
 	Target        *PersistanceTarget `protobuf:"varint,8,opt,name=target,proto3,enum=octopus_sdk.v1.PersistanceTarget,oneof" json:"target,omitempty"`
