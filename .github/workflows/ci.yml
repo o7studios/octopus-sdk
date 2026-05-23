@@ -69,6 +69,9 @@ jobs:
     needs:
       - lint
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: "📥 Checkout Code (Full History)"
         uses: actions/checkout@v6
@@ -102,14 +105,6 @@ jobs:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: "Prepare npm auth"
-        run: |
-          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
-            echo "NPM_TOKEN secret is not set. Skipping npm publish."
-            exit 1
-          fi
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-
       - name: "Extract version from tag"
         id: version
         run: |
@@ -129,8 +124,6 @@ jobs:
 
       - name: "🚀 Publish to npm"
         working-directory: sdk/ts
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           npm publish --access public
 
