@@ -24,6 +24,55 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type PersistanceTarget int32
+
+const (
+	PersistanceTarget_UNKNOWN   PersistanceTarget = 0
+	PersistanceTarget_PERMANENT PersistanceTarget = 1
+	PersistanceTarget_CACHED    PersistanceTarget = 2
+)
+
+// Enum value maps for PersistanceTarget.
+var (
+	PersistanceTarget_name = map[int32]string{
+		0: "UNKNOWN",
+		1: "PERMANENT",
+		2: "CACHED",
+	}
+	PersistanceTarget_value = map[string]int32{
+		"UNKNOWN":   0,
+		"PERMANENT": 1,
+		"CACHED":    2,
+	}
+)
+
+func (x PersistanceTarget) Enum() *PersistanceTarget {
+	p := new(PersistanceTarget)
+	*p = x
+	return p
+}
+
+func (x PersistanceTarget) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (PersistanceTarget) Descriptor() protoreflect.EnumDescriptor {
+	return file_v1_api_proto_enumTypes[0].Descriptor()
+}
+
+func (PersistanceTarget) Type() protoreflect.EnumType {
+	return &file_v1_api_proto_enumTypes[0]
+}
+
+func (x PersistanceTarget) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use PersistanceTarget.Descriptor instead.
+func (PersistanceTarget) EnumDescriptor() ([]byte, []int) {
+	return file_v1_api_proto_rawDescGZIP(), []int{0}
+}
+
 // *
 // Represents a flexible data object.
 type Object struct {
@@ -37,7 +86,9 @@ type Object struct {
 	// Timestamp when the object should no longer be visible by default.
 	ExpiredAt *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=expired_at,json=expiredAt,proto3,oneof" json:"expired_at,omitempty"`
 	// Timestamp when the object should be permanently deleted.
-	DeletedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=deleted_at,json=deletedAt,proto3,oneof" json:"deleted_at,omitempty"`
+	DeletedAt *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=deleted_at,json=deletedAt,proto3,oneof" json:"deleted_at,omitempty"`
+	// Optional target for persistance. If not set: default = permanent
+	Target        *PersistanceTarget `protobuf:"varint,6,opt,name=target,proto3,enum=octopus_sdk.v1.PersistanceTarget,oneof" json:"target,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -107,8 +158,15 @@ func (x *Object) GetDeletedAt() *timestamppb.Timestamp {
 	return nil
 }
 
+func (x *Object) GetTarget() PersistanceTarget {
+	if x != nil && x.Target != nil {
+		return *x.Target
+	}
+	return PersistanceTarget_UNKNOWN
+}
+
 // *
-// A versioned object with metadata from database.
+// A versioned object with metadata from database/cache.
 type Entry struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The underlying object.
@@ -202,7 +260,13 @@ type QueryRequest struct {
 	// Sort by json (use MongoDB sort pattern)
 	DataSort *string `protobuf:"bytes,6,opt,name=data_sort,json=dataSort,proto3,oneof" json:"data_sort,omitempty"`
 	// Entry paginator
-	Paginator     *Paginator `protobuf:"bytes,7,opt,name=paginator,proto3" json:"paginator,omitempty"`
+	Paginator *Paginator `protobuf:"bytes,7,opt,name=paginator,proto3" json:"paginator,omitempty"`
+	// Optional persistence target.
+	// Selects where the entries are looked up from:
+	// UNKNOWN => request will be rejected
+	// PERMANENT => will be looked up inside MongoDB (default)
+	// CACHED => will be looked up inside NATS
+	Target        *PersistanceTarget `protobuf:"varint,8,opt,name=target,proto3,enum=octopus_sdk.v1.PersistanceTarget,oneof" json:"target,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -286,12 +350,25 @@ func (x *QueryRequest) GetPaginator() *Paginator {
 	return nil
 }
 
+func (x *QueryRequest) GetTarget() PersistanceTarget {
+	if x != nil && x.Target != nil {
+		return *x.Target
+	}
+	return PersistanceTarget_UNKNOWN
+}
+
 // *
 // For getting an exact value to a key you already have
 type GetRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Exact key to a object
-	Key           string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	// Optional persistance target:
+	// Location of entry lookup:
+	// UNKNOWN => request will be rejected
+	// PERMANENT => will be saved inside the MongoDB (default)
+	// CACHED => will be saved inside NATS
+	Target        *PersistanceTarget `protobuf:"varint,8,opt,name=target,proto3,enum=octopus_sdk.v1.PersistanceTarget,oneof" json:"target,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -331,6 +408,13 @@ func (x *GetRequest) GetKey() string {
 		return x.Key
 	}
 	return ""
+}
+
+func (x *GetRequest) GetTarget() PersistanceTarget {
+	if x != nil && x.Target != nil {
+		return *x.Target
+	}
+	return PersistanceTarget_UNKNOWN
 }
 
 type GetResponse struct {
@@ -724,7 +808,7 @@ var File_v1_api_proto protoreflect.FileDescriptor
 
 const file_v1_api_proto_rawDesc = "" +
 	"\n" +
-	"\fv1/api.proto\x12\x0eoctopus_sdk.v1\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x9d\x02\n" +
+	"\fv1/api.proto\x12\x0eoctopus_sdk.v1\x1a\x1cgoogle/protobuf/struct.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe8\x02\n" +
 	"\x06Object\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12+\n" +
 	"\x04data\x18\x02 \x01(\v2\x17.google.protobuf.StructR\x04data\x126\n" +
@@ -732,15 +816,17 @@ const file_v1_api_proto_rawDesc = "" +
 	"\n" +
 	"expired_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampH\x00R\texpiredAt\x88\x01\x01\x12>\n" +
 	"\n" +
-	"deleted_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampH\x01R\tdeletedAt\x88\x01\x01B\r\n" +
+	"deleted_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampH\x01R\tdeletedAt\x88\x01\x01\x12>\n" +
+	"\x06target\x18\x06 \x01(\x0e2!.octopus_sdk.v1.PersistanceTargetH\x02R\x06target\x88\x01\x01B\r\n" +
 	"\v_expired_atB\r\n" +
-	"\v_deleted_at\"\x9e\x01\n" +
+	"\v_deleted_atB\t\n" +
+	"\a_target\"\x9e\x01\n" +
 	"\x05Entry\x12.\n" +
 	"\x06object\x18\x01 \x01(\v2\x16.octopus_sdk.v1.ObjectR\x06object\x129\n" +
 	"\n" +
 	"created_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12\x1a\n" +
 	"\brevision\x18\x03 \x01(\x03R\brevision\x12\x0e\n" +
-	"\x02id\x18\x04 \x01(\tR\x02id\"\xec\x03\n" +
+	"\x02id\x18\x04 \x01(\tR\x02id\"\xb7\x04\n" +
 	"\fQueryRequest\x12\x1f\n" +
 	"\vkey_pattern\x18\x01 \x01(\tR\n" +
 	"keyPattern\x12,\n" +
@@ -750,16 +836,20 @@ const file_v1_api_proto_rawDesc = "" +
 	"\vdata_filter\x18\x05 \x01(\tH\x03R\n" +
 	"dataFilter\x88\x01\x01\x12 \n" +
 	"\tdata_sort\x18\x06 \x01(\tH\x04R\bdataSort\x88\x01\x01\x127\n" +
-	"\tpaginator\x18\a \x01(\v2\x19.octopus_sdk.v1.PaginatorR\tpaginatorB\x12\n" +
+	"\tpaginator\x18\a \x01(\v2\x19.octopus_sdk.v1.PaginatorR\tpaginator\x12>\n" +
+	"\x06target\x18\b \x01(\x0e2!.octopus_sdk.v1.PersistanceTargetH\x05R\x06target\x88\x01\x01B\x12\n" +
 	"\x10_include_expiredB\x19\n" +
 	"\x17_created_at_range_startB\x17\n" +
 	"\x15_created_at_range_endB\x0e\n" +
 	"\f_data_filterB\f\n" +
 	"\n" +
-	"_data_sort\"\x1e\n" +
+	"_data_sortB\t\n" +
+	"\a_target\"i\n" +
 	"\n" +
 	"GetRequest\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\"y\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12>\n" +
+	"\x06target\x18\b \x01(\x0e2!.octopus_sdk.v1.PersistanceTargetH\x00R\x06target\x88\x01\x01B\t\n" +
+	"\a_target\"y\n" +
 	"\vGetResponse\x120\n" +
 	"\x06object\x18\x01 \x01(\v2\x16.octopus_sdk.v1.ObjectH\x00R\x06object\x12.\n" +
 	"\x05empty\x18\x02 \x01(\v2\x16.google.protobuf.EmptyH\x00R\x05emptyB\b\n" +
@@ -788,7 +878,12 @@ const file_v1_api_proto_rawDesc = "" +
 	"keyPattern\"T\n" +
 	"\tEventCall\x12.\n" +
 	"\x06object\x18\x01 \x01(\v2\x16.octopus_sdk.v1.ObjectR\x06object\x12\x17\n" +
-	"\acall_id\x18\x02 \x01(\tR\x06callId2\xc7\x02\n" +
+	"\acall_id\x18\x02 \x01(\tR\x06callId*;\n" +
+	"\x11PersistanceTarget\x12\v\n" +
+	"\aUNKNOWN\x10\x00\x12\r\n" +
+	"\tPERMANENT\x10\x01\x12\n" +
+	"\n" +
+	"\x06CACHED\x10\x022\xc7\x02\n" +
 	"\aOctopus\x12D\n" +
 	"\x05Query\x12\x1c.octopus_sdk.v1.QueryRequest\x1a\x1d.octopus_sdk.v1.QueryResponse\x12>\n" +
 	"\x03Get\x12\x1a.octopus_sdk.v1.GetRequest\x1a\x1b.octopus_sdk.v1.GetResponse\x127\n" +
@@ -809,51 +904,56 @@ func file_v1_api_proto_rawDescGZIP() []byte {
 	return file_v1_api_proto_rawDescData
 }
 
+var file_v1_api_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_v1_api_proto_goTypes = []any{
-	(*Object)(nil),                // 0: octopus_sdk.v1.Object
-	(*Entry)(nil),                 // 1: octopus_sdk.v1.Entry
-	(*QueryRequest)(nil),          // 2: octopus_sdk.v1.QueryRequest
-	(*GetRequest)(nil),            // 3: octopus_sdk.v1.GetRequest
-	(*GetResponse)(nil),           // 4: octopus_sdk.v1.GetResponse
-	(*Paginator)(nil),             // 5: octopus_sdk.v1.Paginator
-	(*PageInfo)(nil),              // 6: octopus_sdk.v1.PageInfo
-	(*QueryResponse)(nil),         // 7: octopus_sdk.v1.QueryResponse
-	(*ListenMessage)(nil),         // 8: octopus_sdk.v1.ListenMessage
-	(*EventCall)(nil),             // 9: octopus_sdk.v1.EventCall
-	(*structpb.Struct)(nil),       // 10: google.protobuf.Struct
-	(*timestamppb.Timestamp)(nil), // 11: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),         // 12: google.protobuf.Empty
+	(PersistanceTarget)(0),        // 0: octopus_sdk.v1.PersistanceTarget
+	(*Object)(nil),                // 1: octopus_sdk.v1.Object
+	(*Entry)(nil),                 // 2: octopus_sdk.v1.Entry
+	(*QueryRequest)(nil),          // 3: octopus_sdk.v1.QueryRequest
+	(*GetRequest)(nil),            // 4: octopus_sdk.v1.GetRequest
+	(*GetResponse)(nil),           // 5: octopus_sdk.v1.GetResponse
+	(*Paginator)(nil),             // 6: octopus_sdk.v1.Paginator
+	(*PageInfo)(nil),              // 7: octopus_sdk.v1.PageInfo
+	(*QueryResponse)(nil),         // 8: octopus_sdk.v1.QueryResponse
+	(*ListenMessage)(nil),         // 9: octopus_sdk.v1.ListenMessage
+	(*EventCall)(nil),             // 10: octopus_sdk.v1.EventCall
+	(*structpb.Struct)(nil),       // 11: google.protobuf.Struct
+	(*timestamppb.Timestamp)(nil), // 12: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),         // 13: google.protobuf.Empty
 }
 var file_v1_api_proto_depIdxs = []int32{
-	10, // 0: octopus_sdk.v1.Object.data:type_name -> google.protobuf.Struct
-	11, // 1: octopus_sdk.v1.Object.expired_at:type_name -> google.protobuf.Timestamp
-	11, // 2: octopus_sdk.v1.Object.deleted_at:type_name -> google.protobuf.Timestamp
-	0,  // 3: octopus_sdk.v1.Entry.object:type_name -> octopus_sdk.v1.Object
-	11, // 4: octopus_sdk.v1.Entry.created_at:type_name -> google.protobuf.Timestamp
-	11, // 5: octopus_sdk.v1.QueryRequest.created_at_range_start:type_name -> google.protobuf.Timestamp
-	11, // 6: octopus_sdk.v1.QueryRequest.created_at_range_end:type_name -> google.protobuf.Timestamp
-	5,  // 7: octopus_sdk.v1.QueryRequest.paginator:type_name -> octopus_sdk.v1.Paginator
-	0,  // 8: octopus_sdk.v1.GetResponse.object:type_name -> octopus_sdk.v1.Object
-	12, // 9: octopus_sdk.v1.GetResponse.empty:type_name -> google.protobuf.Empty
-	1,  // 10: octopus_sdk.v1.QueryResponse.entries:type_name -> octopus_sdk.v1.Entry
-	6,  // 11: octopus_sdk.v1.QueryResponse.page_info:type_name -> octopus_sdk.v1.PageInfo
-	0,  // 12: octopus_sdk.v1.EventCall.object:type_name -> octopus_sdk.v1.Object
-	2,  // 13: octopus_sdk.v1.Octopus.Query:input_type -> octopus_sdk.v1.QueryRequest
-	3,  // 14: octopus_sdk.v1.Octopus.Get:input_type -> octopus_sdk.v1.GetRequest
-	0,  // 15: octopus_sdk.v1.Octopus.Write:input_type -> octopus_sdk.v1.Object
-	0,  // 16: octopus_sdk.v1.Octopus.Call:input_type -> octopus_sdk.v1.Object
-	8,  // 17: octopus_sdk.v1.Octopus.Listen:input_type -> octopus_sdk.v1.ListenMessage
-	7,  // 18: octopus_sdk.v1.Octopus.Query:output_type -> octopus_sdk.v1.QueryResponse
-	4,  // 19: octopus_sdk.v1.Octopus.Get:output_type -> octopus_sdk.v1.GetResponse
-	12, // 20: octopus_sdk.v1.Octopus.Write:output_type -> google.protobuf.Empty
-	1,  // 21: octopus_sdk.v1.Octopus.Call:output_type -> octopus_sdk.v1.Entry
-	9,  // 22: octopus_sdk.v1.Octopus.Listen:output_type -> octopus_sdk.v1.EventCall
-	18, // [18:23] is the sub-list for method output_type
-	13, // [13:18] is the sub-list for method input_type
-	13, // [13:13] is the sub-list for extension type_name
-	13, // [13:13] is the sub-list for extension extendee
-	0,  // [0:13] is the sub-list for field type_name
+	11, // 0: octopus_sdk.v1.Object.data:type_name -> google.protobuf.Struct
+	12, // 1: octopus_sdk.v1.Object.expired_at:type_name -> google.protobuf.Timestamp
+	12, // 2: octopus_sdk.v1.Object.deleted_at:type_name -> google.protobuf.Timestamp
+	0,  // 3: octopus_sdk.v1.Object.target:type_name -> octopus_sdk.v1.PersistanceTarget
+	1,  // 4: octopus_sdk.v1.Entry.object:type_name -> octopus_sdk.v1.Object
+	12, // 5: octopus_sdk.v1.Entry.created_at:type_name -> google.protobuf.Timestamp
+	12, // 6: octopus_sdk.v1.QueryRequest.created_at_range_start:type_name -> google.protobuf.Timestamp
+	12, // 7: octopus_sdk.v1.QueryRequest.created_at_range_end:type_name -> google.protobuf.Timestamp
+	6,  // 8: octopus_sdk.v1.QueryRequest.paginator:type_name -> octopus_sdk.v1.Paginator
+	0,  // 9: octopus_sdk.v1.QueryRequest.target:type_name -> octopus_sdk.v1.PersistanceTarget
+	0,  // 10: octopus_sdk.v1.GetRequest.target:type_name -> octopus_sdk.v1.PersistanceTarget
+	1,  // 11: octopus_sdk.v1.GetResponse.object:type_name -> octopus_sdk.v1.Object
+	13, // 12: octopus_sdk.v1.GetResponse.empty:type_name -> google.protobuf.Empty
+	2,  // 13: octopus_sdk.v1.QueryResponse.entries:type_name -> octopus_sdk.v1.Entry
+	7,  // 14: octopus_sdk.v1.QueryResponse.page_info:type_name -> octopus_sdk.v1.PageInfo
+	1,  // 15: octopus_sdk.v1.EventCall.object:type_name -> octopus_sdk.v1.Object
+	3,  // 16: octopus_sdk.v1.Octopus.Query:input_type -> octopus_sdk.v1.QueryRequest
+	4,  // 17: octopus_sdk.v1.Octopus.Get:input_type -> octopus_sdk.v1.GetRequest
+	1,  // 18: octopus_sdk.v1.Octopus.Write:input_type -> octopus_sdk.v1.Object
+	1,  // 19: octopus_sdk.v1.Octopus.Call:input_type -> octopus_sdk.v1.Object
+	9,  // 20: octopus_sdk.v1.Octopus.Listen:input_type -> octopus_sdk.v1.ListenMessage
+	8,  // 21: octopus_sdk.v1.Octopus.Query:output_type -> octopus_sdk.v1.QueryResponse
+	5,  // 22: octopus_sdk.v1.Octopus.Get:output_type -> octopus_sdk.v1.GetResponse
+	13, // 23: octopus_sdk.v1.Octopus.Write:output_type -> google.protobuf.Empty
+	2,  // 24: octopus_sdk.v1.Octopus.Call:output_type -> octopus_sdk.v1.Entry
+	10, // 25: octopus_sdk.v1.Octopus.Listen:output_type -> octopus_sdk.v1.EventCall
+	21, // [21:26] is the sub-list for method output_type
+	16, // [16:21] is the sub-list for method input_type
+	16, // [16:16] is the sub-list for extension type_name
+	16, // [16:16] is the sub-list for extension extendee
+	0,  // [0:16] is the sub-list for field type_name
 }
 
 func init() { file_v1_api_proto_init() }
@@ -863,6 +963,7 @@ func file_v1_api_proto_init() {
 	}
 	file_v1_api_proto_msgTypes[0].OneofWrappers = []any{}
 	file_v1_api_proto_msgTypes[2].OneofWrappers = []any{}
+	file_v1_api_proto_msgTypes[3].OneofWrappers = []any{}
 	file_v1_api_proto_msgTypes[4].OneofWrappers = []any{
 		(*GetResponse_Object)(nil),
 		(*GetResponse_Empty)(nil),
@@ -873,13 +974,14 @@ func file_v1_api_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_v1_api_proto_rawDesc), len(file_v1_api_proto_rawDesc)),
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_v1_api_proto_goTypes,
 		DependencyIndexes: file_v1_api_proto_depIdxs,
+		EnumInfos:         file_v1_api_proto_enumTypes,
 		MessageInfos:      file_v1_api_proto_msgTypes,
 	}.Build()
 	File_v1_api_proto = out.File
