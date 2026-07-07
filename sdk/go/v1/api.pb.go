@@ -73,6 +73,55 @@ func (PersistanceTarget) EnumDescriptor() ([]byte, []int) {
 	return file_v1_api_proto_rawDescGZIP(), []int{0}
 }
 
+type IndexField_IndexDirection int32
+
+const (
+	IndexField_UNKNOWN IndexField_IndexDirection = 0
+	IndexField_ASC     IndexField_IndexDirection = 1
+	IndexField_DESC    IndexField_IndexDirection = 2
+)
+
+// Enum value maps for IndexField_IndexDirection.
+var (
+	IndexField_IndexDirection_name = map[int32]string{
+		0: "UNKNOWN",
+		1: "ASC",
+		2: "DESC",
+	}
+	IndexField_IndexDirection_value = map[string]int32{
+		"UNKNOWN": 0,
+		"ASC":     1,
+		"DESC":    2,
+	}
+)
+
+func (x IndexField_IndexDirection) Enum() *IndexField_IndexDirection {
+	p := new(IndexField_IndexDirection)
+	*p = x
+	return p
+}
+
+func (x IndexField_IndexDirection) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (IndexField_IndexDirection) Descriptor() protoreflect.EnumDescriptor {
+	return file_v1_api_proto_enumTypes[1].Descriptor()
+}
+
+func (IndexField_IndexDirection) Type() protoreflect.EnumType {
+	return &file_v1_api_proto_enumTypes[1]
+}
+
+func (x IndexField_IndexDirection) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use IndexField_IndexDirection.Descriptor instead.
+func (IndexField_IndexDirection) EnumDescriptor() ([]byte, []int) {
+	return file_v1_api_proto_rawDescGZIP(), []int{9, 0}
+}
+
 // *
 // Represents a flexible data object.
 type Object struct {
@@ -698,6 +747,184 @@ func (x *QueryResponse) GetPageInfo() *PageInfo {
 }
 
 // *
+// Request for creating a developer-defined MongoDB index.
+type CreateIndexRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Concrete collection name. Wildcard patterns are not allowed.
+	Collection string `protobuf:"bytes,1,opt,name=collection,proto3" json:"collection,omitempty"`
+	// Optional explicit index name. If empty, the server can generate one from
+	// the requested fields.
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	// Ordered list of fields that make up the index.
+	Fields []*IndexField `protobuf:"bytes,3,rep,name=fields,proto3" json:"fields,omitempty"`
+	// Whether the index should enforce unique values.
+	Unique        bool `protobuf:"varint,4,opt,name=unique,proto3" json:"unique,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateIndexRequest) Reset() {
+	*x = CreateIndexRequest{}
+	mi := &file_v1_api_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateIndexRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateIndexRequest) ProtoMessage() {}
+
+func (x *CreateIndexRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_v1_api_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateIndexRequest.ProtoReflect.Descriptor instead.
+func (*CreateIndexRequest) Descriptor() ([]byte, []int) {
+	return file_v1_api_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *CreateIndexRequest) GetCollection() string {
+	if x != nil {
+		return x.Collection
+	}
+	return ""
+}
+
+func (x *CreateIndexRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CreateIndexRequest) GetFields() []*IndexField {
+	if x != nil {
+		return x.Fields
+	}
+	return nil
+}
+
+func (x *CreateIndexRequest) GetUnique() bool {
+	if x != nil {
+		return x.Unique
+	}
+	return false
+}
+
+// *
+// A single field inside a developer-defined index.
+type IndexField struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Mongo path to index, e.g. data.player_uuid, data.server, created_at.
+	Path string `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`
+	// Index sort direction for this path.
+	Direction     IndexField_IndexDirection `protobuf:"varint,2,opt,name=direction,proto3,enum=octopus_sdk.v1.IndexField_IndexDirection" json:"direction,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *IndexField) Reset() {
+	*x = IndexField{}
+	mi := &file_v1_api_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IndexField) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IndexField) ProtoMessage() {}
+
+func (x *IndexField) ProtoReflect() protoreflect.Message {
+	mi := &file_v1_api_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IndexField.ProtoReflect.Descriptor instead.
+func (*IndexField) Descriptor() ([]byte, []int) {
+	return file_v1_api_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *IndexField) GetPath() string {
+	if x != nil {
+		return x.Path
+	}
+	return ""
+}
+
+func (x *IndexField) GetDirection() IndexField_IndexDirection {
+	if x != nil {
+		return x.Direction
+	}
+	return IndexField_UNKNOWN
+}
+
+// *
+// Response returned after creating or confirming an index.
+type CreateIndexResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The MongoDB index name.
+	Name          string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateIndexResponse) Reset() {
+	*x = CreateIndexResponse{}
+	mi := &file_v1_api_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateIndexResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateIndexResponse) ProtoMessage() {}
+
+func (x *CreateIndexResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_v1_api_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateIndexResponse.ProtoReflect.Descriptor instead.
+func (*CreateIndexResponse) Descriptor() ([]byte, []int) {
+	return file_v1_api_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *CreateIndexResponse) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+// *
 // Message type for the listen stream.
 type ListenMessage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -713,7 +940,7 @@ type ListenMessage struct {
 
 func (x *ListenMessage) Reset() {
 	*x = ListenMessage{}
-	mi := &file_v1_api_proto_msgTypes[8]
+	mi := &file_v1_api_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -725,7 +952,7 @@ func (x *ListenMessage) String() string {
 func (*ListenMessage) ProtoMessage() {}
 
 func (x *ListenMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_api_proto_msgTypes[8]
+	mi := &file_v1_api_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -738,7 +965,7 @@ func (x *ListenMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListenMessage.ProtoReflect.Descriptor instead.
 func (*ListenMessage) Descriptor() ([]byte, []int) {
-	return file_v1_api_proto_rawDescGZIP(), []int{8}
+	return file_v1_api_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *ListenMessage) GetKeyPattern() []string {
@@ -762,7 +989,7 @@ type EventCall struct {
 
 func (x *EventCall) Reset() {
 	*x = EventCall{}
-	mi := &file_v1_api_proto_msgTypes[9]
+	mi := &file_v1_api_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -774,7 +1001,7 @@ func (x *EventCall) String() string {
 func (*EventCall) ProtoMessage() {}
 
 func (x *EventCall) ProtoReflect() protoreflect.Message {
-	mi := &file_v1_api_proto_msgTypes[9]
+	mi := &file_v1_api_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -787,7 +1014,7 @@ func (x *EventCall) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EventCall.ProtoReflect.Descriptor instead.
 func (*EventCall) Descriptor() ([]byte, []int) {
-	return file_v1_api_proto_rawDescGZIP(), []int{9}
+	return file_v1_api_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *EventCall) GetObject() *Object {
@@ -872,7 +1099,24 @@ const file_v1_api_proto_rawDesc = "" +
 	"_prev_page\"w\n" +
 	"\rQueryResponse\x12/\n" +
 	"\aentries\x18\x01 \x03(\v2\x15.octopus_sdk.v1.EntryR\aentries\x125\n" +
-	"\tpage_info\x18\x02 \x01(\v2\x18.octopus_sdk.v1.PageInfoR\bpageInfo\"0\n" +
+	"\tpage_info\x18\x02 \x01(\v2\x18.octopus_sdk.v1.PageInfoR\bpageInfo\"\x94\x01\n" +
+	"\x12CreateIndexRequest\x12\x1e\n" +
+	"\n" +
+	"collection\x18\x01 \x01(\tR\n" +
+	"collection\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x122\n" +
+	"\x06fields\x18\x03 \x03(\v2\x1a.octopus_sdk.v1.IndexFieldR\x06fields\x12\x16\n" +
+	"\x06unique\x18\x04 \x01(\bR\x06unique\"\x9b\x01\n" +
+	"\n" +
+	"IndexField\x12\x12\n" +
+	"\x04path\x18\x01 \x01(\tR\x04path\x12G\n" +
+	"\tdirection\x18\x02 \x01(\x0e2).octopus_sdk.v1.IndexField.IndexDirectionR\tdirection\"0\n" +
+	"\x0eIndexDirection\x12\v\n" +
+	"\aUNKNOWN\x10\x00\x12\a\n" +
+	"\x03ASC\x10\x01\x12\b\n" +
+	"\x04DESC\x10\x02\")\n" +
+	"\x13CreateIndexResponse\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\"0\n" +
 	"\rListenMessage\x12\x1f\n" +
 	"\vkey_pattern\x18\x01 \x03(\tR\n" +
 	"keyPattern\"T\n" +
@@ -883,13 +1127,14 @@ const file_v1_api_proto_rawDesc = "" +
 	"\aUNKNOWN\x10\x00\x12\r\n" +
 	"\tPERMANENT\x10\x01\x12\n" +
 	"\n" +
-	"\x06CACHED\x10\x022\xc7\x02\n" +
+	"\x06CACHED\x10\x022\x9f\x03\n" +
 	"\aOctopus\x12D\n" +
 	"\x05Query\x12\x1c.octopus_sdk.v1.QueryRequest\x1a\x1d.octopus_sdk.v1.QueryResponse\x12>\n" +
 	"\x03Get\x12\x1a.octopus_sdk.v1.GetRequest\x1a\x1b.octopus_sdk.v1.GetResponse\x127\n" +
 	"\x05Write\x12\x16.octopus_sdk.v1.Object\x1a\x16.google.protobuf.Empty\x125\n" +
 	"\x04Call\x12\x16.octopus_sdk.v1.Object\x1a\x15.octopus_sdk.v1.Entry\x12F\n" +
-	"\x06Listen\x12\x1d.octopus_sdk.v1.ListenMessage\x1a\x19.octopus_sdk.v1.EventCall(\x010\x01BN\n" +
+	"\x06Listen\x12\x1d.octopus_sdk.v1.ListenMessage\x1a\x19.octopus_sdk.v1.EventCall(\x010\x01\x12V\n" +
+	"\vCreateIndex\x12\".octopus_sdk.v1.CreateIndexRequest\x1a#.octopus_sdk.v1.CreateIndexResponseBN\n" +
 	"\x18studio.o7.octopus.sdk.v1P\x01Z0github.com/o7studios/octopus-sdk/go/v1;octopusv1b\x06proto3"
 
 var (
@@ -904,56 +1149,64 @@ func file_v1_api_proto_rawDescGZIP() []byte {
 	return file_v1_api_proto_rawDescData
 }
 
-var file_v1_api_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_v1_api_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_v1_api_proto_goTypes = []any{
-	(PersistanceTarget)(0),        // 0: octopus_sdk.v1.PersistanceTarget
-	(*Object)(nil),                // 1: octopus_sdk.v1.Object
-	(*Entry)(nil),                 // 2: octopus_sdk.v1.Entry
-	(*QueryRequest)(nil),          // 3: octopus_sdk.v1.QueryRequest
-	(*GetRequest)(nil),            // 4: octopus_sdk.v1.GetRequest
-	(*GetResponse)(nil),           // 5: octopus_sdk.v1.GetResponse
-	(*Paginator)(nil),             // 6: octopus_sdk.v1.Paginator
-	(*PageInfo)(nil),              // 7: octopus_sdk.v1.PageInfo
-	(*QueryResponse)(nil),         // 8: octopus_sdk.v1.QueryResponse
-	(*ListenMessage)(nil),         // 9: octopus_sdk.v1.ListenMessage
-	(*EventCall)(nil),             // 10: octopus_sdk.v1.EventCall
-	(*structpb.Struct)(nil),       // 11: google.protobuf.Struct
-	(*timestamppb.Timestamp)(nil), // 12: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),         // 13: google.protobuf.Empty
+	(PersistanceTarget)(0),         // 0: octopus_sdk.v1.PersistanceTarget
+	(IndexField_IndexDirection)(0), // 1: octopus_sdk.v1.IndexField.IndexDirection
+	(*Object)(nil),                 // 2: octopus_sdk.v1.Object
+	(*Entry)(nil),                  // 3: octopus_sdk.v1.Entry
+	(*QueryRequest)(nil),           // 4: octopus_sdk.v1.QueryRequest
+	(*GetRequest)(nil),             // 5: octopus_sdk.v1.GetRequest
+	(*GetResponse)(nil),            // 6: octopus_sdk.v1.GetResponse
+	(*Paginator)(nil),              // 7: octopus_sdk.v1.Paginator
+	(*PageInfo)(nil),               // 8: octopus_sdk.v1.PageInfo
+	(*QueryResponse)(nil),          // 9: octopus_sdk.v1.QueryResponse
+	(*CreateIndexRequest)(nil),     // 10: octopus_sdk.v1.CreateIndexRequest
+	(*IndexField)(nil),             // 11: octopus_sdk.v1.IndexField
+	(*CreateIndexResponse)(nil),    // 12: octopus_sdk.v1.CreateIndexResponse
+	(*ListenMessage)(nil),          // 13: octopus_sdk.v1.ListenMessage
+	(*EventCall)(nil),              // 14: octopus_sdk.v1.EventCall
+	(*structpb.Struct)(nil),        // 15: google.protobuf.Struct
+	(*timestamppb.Timestamp)(nil),  // 16: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),          // 17: google.protobuf.Empty
 }
 var file_v1_api_proto_depIdxs = []int32{
-	11, // 0: octopus_sdk.v1.Object.data:type_name -> google.protobuf.Struct
-	12, // 1: octopus_sdk.v1.Object.expired_at:type_name -> google.protobuf.Timestamp
-	12, // 2: octopus_sdk.v1.Object.deleted_at:type_name -> google.protobuf.Timestamp
+	15, // 0: octopus_sdk.v1.Object.data:type_name -> google.protobuf.Struct
+	16, // 1: octopus_sdk.v1.Object.expired_at:type_name -> google.protobuf.Timestamp
+	16, // 2: octopus_sdk.v1.Object.deleted_at:type_name -> google.protobuf.Timestamp
 	0,  // 3: octopus_sdk.v1.Object.target:type_name -> octopus_sdk.v1.PersistanceTarget
-	1,  // 4: octopus_sdk.v1.Entry.object:type_name -> octopus_sdk.v1.Object
-	12, // 5: octopus_sdk.v1.Entry.created_at:type_name -> google.protobuf.Timestamp
-	12, // 6: octopus_sdk.v1.QueryRequest.created_at_range_start:type_name -> google.protobuf.Timestamp
-	12, // 7: octopus_sdk.v1.QueryRequest.created_at_range_end:type_name -> google.protobuf.Timestamp
-	6,  // 8: octopus_sdk.v1.QueryRequest.paginator:type_name -> octopus_sdk.v1.Paginator
+	2,  // 4: octopus_sdk.v1.Entry.object:type_name -> octopus_sdk.v1.Object
+	16, // 5: octopus_sdk.v1.Entry.created_at:type_name -> google.protobuf.Timestamp
+	16, // 6: octopus_sdk.v1.QueryRequest.created_at_range_start:type_name -> google.protobuf.Timestamp
+	16, // 7: octopus_sdk.v1.QueryRequest.created_at_range_end:type_name -> google.protobuf.Timestamp
+	7,  // 8: octopus_sdk.v1.QueryRequest.paginator:type_name -> octopus_sdk.v1.Paginator
 	0,  // 9: octopus_sdk.v1.QueryRequest.target:type_name -> octopus_sdk.v1.PersistanceTarget
 	0,  // 10: octopus_sdk.v1.GetRequest.target:type_name -> octopus_sdk.v1.PersistanceTarget
-	1,  // 11: octopus_sdk.v1.GetResponse.object:type_name -> octopus_sdk.v1.Object
-	13, // 12: octopus_sdk.v1.GetResponse.empty:type_name -> google.protobuf.Empty
-	2,  // 13: octopus_sdk.v1.QueryResponse.entries:type_name -> octopus_sdk.v1.Entry
-	7,  // 14: octopus_sdk.v1.QueryResponse.page_info:type_name -> octopus_sdk.v1.PageInfo
-	1,  // 15: octopus_sdk.v1.EventCall.object:type_name -> octopus_sdk.v1.Object
-	3,  // 16: octopus_sdk.v1.Octopus.Query:input_type -> octopus_sdk.v1.QueryRequest
-	4,  // 17: octopus_sdk.v1.Octopus.Get:input_type -> octopus_sdk.v1.GetRequest
-	1,  // 18: octopus_sdk.v1.Octopus.Write:input_type -> octopus_sdk.v1.Object
-	1,  // 19: octopus_sdk.v1.Octopus.Call:input_type -> octopus_sdk.v1.Object
-	9,  // 20: octopus_sdk.v1.Octopus.Listen:input_type -> octopus_sdk.v1.ListenMessage
-	8,  // 21: octopus_sdk.v1.Octopus.Query:output_type -> octopus_sdk.v1.QueryResponse
-	5,  // 22: octopus_sdk.v1.Octopus.Get:output_type -> octopus_sdk.v1.GetResponse
-	13, // 23: octopus_sdk.v1.Octopus.Write:output_type -> google.protobuf.Empty
-	2,  // 24: octopus_sdk.v1.Octopus.Call:output_type -> octopus_sdk.v1.Entry
-	10, // 25: octopus_sdk.v1.Octopus.Listen:output_type -> octopus_sdk.v1.EventCall
-	21, // [21:26] is the sub-list for method output_type
-	16, // [16:21] is the sub-list for method input_type
-	16, // [16:16] is the sub-list for extension type_name
-	16, // [16:16] is the sub-list for extension extendee
-	0,  // [0:16] is the sub-list for field type_name
+	2,  // 11: octopus_sdk.v1.GetResponse.object:type_name -> octopus_sdk.v1.Object
+	17, // 12: octopus_sdk.v1.GetResponse.empty:type_name -> google.protobuf.Empty
+	3,  // 13: octopus_sdk.v1.QueryResponse.entries:type_name -> octopus_sdk.v1.Entry
+	8,  // 14: octopus_sdk.v1.QueryResponse.page_info:type_name -> octopus_sdk.v1.PageInfo
+	11, // 15: octopus_sdk.v1.CreateIndexRequest.fields:type_name -> octopus_sdk.v1.IndexField
+	1,  // 16: octopus_sdk.v1.IndexField.direction:type_name -> octopus_sdk.v1.IndexField.IndexDirection
+	2,  // 17: octopus_sdk.v1.EventCall.object:type_name -> octopus_sdk.v1.Object
+	4,  // 18: octopus_sdk.v1.Octopus.Query:input_type -> octopus_sdk.v1.QueryRequest
+	5,  // 19: octopus_sdk.v1.Octopus.Get:input_type -> octopus_sdk.v1.GetRequest
+	2,  // 20: octopus_sdk.v1.Octopus.Write:input_type -> octopus_sdk.v1.Object
+	2,  // 21: octopus_sdk.v1.Octopus.Call:input_type -> octopus_sdk.v1.Object
+	13, // 22: octopus_sdk.v1.Octopus.Listen:input_type -> octopus_sdk.v1.ListenMessage
+	10, // 23: octopus_sdk.v1.Octopus.CreateIndex:input_type -> octopus_sdk.v1.CreateIndexRequest
+	9,  // 24: octopus_sdk.v1.Octopus.Query:output_type -> octopus_sdk.v1.QueryResponse
+	6,  // 25: octopus_sdk.v1.Octopus.Get:output_type -> octopus_sdk.v1.GetResponse
+	17, // 26: octopus_sdk.v1.Octopus.Write:output_type -> google.protobuf.Empty
+	3,  // 27: octopus_sdk.v1.Octopus.Call:output_type -> octopus_sdk.v1.Entry
+	14, // 28: octopus_sdk.v1.Octopus.Listen:output_type -> octopus_sdk.v1.EventCall
+	12, // 29: octopus_sdk.v1.Octopus.CreateIndex:output_type -> octopus_sdk.v1.CreateIndexResponse
+	24, // [24:30] is the sub-list for method output_type
+	18, // [18:24] is the sub-list for method input_type
+	18, // [18:18] is the sub-list for extension type_name
+	18, // [18:18] is the sub-list for extension extendee
+	0,  // [0:18] is the sub-list for field type_name
 }
 
 func init() { file_v1_api_proto_init() }
@@ -974,8 +1227,8 @@ func file_v1_api_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_v1_api_proto_rawDesc), len(file_v1_api_proto_rawDesc)),
-			NumEnums:      1,
-			NumMessages:   10,
+			NumEnums:      2,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

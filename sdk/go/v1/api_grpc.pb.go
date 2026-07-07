@@ -20,11 +20,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Octopus_Query_FullMethodName  = "/octopus_sdk.v1.Octopus/Query"
-	Octopus_Get_FullMethodName    = "/octopus_sdk.v1.Octopus/Get"
-	Octopus_Write_FullMethodName  = "/octopus_sdk.v1.Octopus/Write"
-	Octopus_Call_FullMethodName   = "/octopus_sdk.v1.Octopus/Call"
-	Octopus_Listen_FullMethodName = "/octopus_sdk.v1.Octopus/Listen"
+	Octopus_Query_FullMethodName       = "/octopus_sdk.v1.Octopus/Query"
+	Octopus_Get_FullMethodName         = "/octopus_sdk.v1.Octopus/Get"
+	Octopus_Write_FullMethodName       = "/octopus_sdk.v1.Octopus/Write"
+	Octopus_Call_FullMethodName        = "/octopus_sdk.v1.Octopus/Call"
+	Octopus_Listen_FullMethodName      = "/octopus_sdk.v1.Octopus/Listen"
+	Octopus_CreateIndex_FullMethodName = "/octopus_sdk.v1.Octopus/CreateIndex"
 )
 
 // OctopusClient is the client API for Octopus service.
@@ -65,6 +66,13 @@ type OctopusClient interface {
 	// `ListenMessage`. This will reset all keys for the current
 	// subscription and the new keys will be used.
 	Listen(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[ListenMessage, EventCall], error)
+	// *
+	// Creates a MongoDB index for a concrete collection.
+	//
+	// This is idempotent when the same index name already exists with the same
+	// definition. If the name exists with a different definition, the server
+	// rejects the request instead of replacing the index implicitly.
+	CreateIndex(ctx context.Context, in *CreateIndexRequest, opts ...grpc.CallOption) (*CreateIndexResponse, error)
 }
 
 type octopusClient struct {
@@ -128,6 +136,16 @@ func (c *octopusClient) Listen(ctx context.Context, opts ...grpc.CallOption) (gr
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type Octopus_ListenClient = grpc.BidiStreamingClient[ListenMessage, EventCall]
 
+func (c *octopusClient) CreateIndex(ctx context.Context, in *CreateIndexRequest, opts ...grpc.CallOption) (*CreateIndexResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateIndexResponse)
+	err := c.cc.Invoke(ctx, Octopus_CreateIndex_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OctopusServer is the server API for Octopus service.
 // All implementations must embed UnimplementedOctopusServer
 // for forward compatibility.
@@ -166,6 +184,13 @@ type OctopusServer interface {
 	// `ListenMessage`. This will reset all keys for the current
 	// subscription and the new keys will be used.
 	Listen(grpc.BidiStreamingServer[ListenMessage, EventCall]) error
+	// *
+	// Creates a MongoDB index for a concrete collection.
+	//
+	// This is idempotent when the same index name already exists with the same
+	// definition. If the name exists with a different definition, the server
+	// rejects the request instead of replacing the index implicitly.
+	CreateIndex(context.Context, *CreateIndexRequest) (*CreateIndexResponse, error)
 	mustEmbedUnimplementedOctopusServer()
 }
 
@@ -190,6 +215,9 @@ func (UnimplementedOctopusServer) Call(context.Context, *Object) (*Entry, error)
 }
 func (UnimplementedOctopusServer) Listen(grpc.BidiStreamingServer[ListenMessage, EventCall]) error {
 	return status.Error(codes.Unimplemented, "method Listen not implemented")
+}
+func (UnimplementedOctopusServer) CreateIndex(context.Context, *CreateIndexRequest) (*CreateIndexResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateIndex not implemented")
 }
 func (UnimplementedOctopusServer) mustEmbedUnimplementedOctopusServer() {}
 func (UnimplementedOctopusServer) testEmbeddedByValue()                 {}
@@ -291,6 +319,24 @@ func _Octopus_Listen_Handler(srv interface{}, stream grpc.ServerStream) error {
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type Octopus_ListenServer = grpc.BidiStreamingServer[ListenMessage, EventCall]
 
+func _Octopus_CreateIndex_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateIndexRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OctopusServer).CreateIndex(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Octopus_CreateIndex_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OctopusServer).CreateIndex(ctx, req.(*CreateIndexRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Octopus_ServiceDesc is the grpc.ServiceDesc for Octopus service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -313,6 +359,10 @@ var Octopus_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Call",
 			Handler:    _Octopus_Call_Handler,
+		},
+		{
+			MethodName: "CreateIndex",
+			Handler:    _Octopus_CreateIndex_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
