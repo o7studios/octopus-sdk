@@ -50,6 +50,14 @@ service Octopus {
    * subscription and the new keys will be used.
    */
   rpc Listen(stream ListenMessage) returns(stream EventCall);
+  /**
+   * Creates a MongoDB index for a concrete collection.
+   *
+   * This is idempotent when the same index name already exists with the same
+   * definition. If the name exists with a different definition, the server
+   * rejects the request instead of replacing the index implicitly.
+   */
+  rpc CreateIndex(CreateIndexRequest) returns (CreateIndexResponse);
 }
 
 enum PersistanceTarget {
@@ -188,6 +196,49 @@ message QueryResponse {
 
   // Page information about the cursor.
   PageInfo page_info = 2;
+}
+
+/**
+ * Request for creating a developer-defined MongoDB index.
+ */
+message CreateIndexRequest {
+  // Concrete collection name. Wildcard patterns are not allowed.
+  string collection = 1;
+
+  // Optional explicit index name. If empty, the server can generate one from
+  // the requested fields.
+  string name = 2;
+
+  // Ordered list of fields that make up the index.
+  repeated IndexField fields = 3;
+
+  // Whether the index should enforce unique values.
+  bool unique = 4;
+}
+
+/**
+ * A single field inside a developer-defined index.
+ */
+message IndexField {
+  enum IndexDirection {
+    UNKNOWN = 0;
+    ASC = 1;
+    DESC = 2;
+  }
+
+  // Mongo path to index, e.g. data.player_uuid, data.server, created_at.
+  string path = 1;
+
+  // Index sort direction for this path.
+  IndexDirection direction = 2;
+}
+
+/**
+ * Response returned after creating or confirming an index.
+ */
+message CreateIndexResponse {
+  // The MongoDB index name.
+  string name = 1;
 }
 
 /**
