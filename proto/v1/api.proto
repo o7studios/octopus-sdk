@@ -87,6 +87,12 @@ message Object {
 
   // Optional target for persistance. If not set: default = permanent
   optional PersistanceTarget target = 6;
+
+  // Only apply the write if the stored object is still at this version, as
+  // returned by Get or by a previous Call. 0 means the key must not exist yet.
+  // A mismatch fails with ABORTED and writes nothing; re-read and try again.
+  // Cannot be combined with preserve_previous_entry.
+  optional int64 expected_version = 7;
 }
 
 /**
@@ -104,6 +110,10 @@ message Entry {
 
   // Unique identifier for this entry.
   string id = 4;
+
+  // Write counter of the key. Unlike revision it also increments on in-place
+  // overwrites, so it changes on every write. Use it as expected_version.
+  int64 version = 5;
 }
 
 /**
@@ -163,6 +173,8 @@ message GetResponse {
     // If no object is found for the given key, this field is set
     google.protobuf.Empty empty = 2;
   }
+  // Version of the returned object, 0 when none was found.
+  int64 version = 3;
 }
 
 /**
