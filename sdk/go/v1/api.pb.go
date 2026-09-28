@@ -122,7 +122,7 @@ func (IndexField_IndexDirection) EnumDescriptor() ([]byte, []int) {
 	return file_v1_api_proto_rawDescGZIP(), []int{9, 0}
 }
 
-//*
+// *
 // Represents a flexible data object.
 type Object struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -226,7 +226,7 @@ func (x *Object) GetExpectedVersion() int64 {
 	return 0
 }
 
-//*
+// *
 // A versioned object with metadata from database/cache.
 type Entry struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -310,13 +310,14 @@ func (x *Entry) GetVersion() int64 {
 	return 0
 }
 
-//*
+// *
 // Filters and options for `Query` RPC.
 type QueryRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Pattern to match keys. Supports wildcards:
-	//   *  — matches exactly one token (between dots), e.g., "foo.*.bar" matches "foo.x.bar" but not "foo.x.y.bar"
-	//   >  — matches one or more tokens until the end, e.g., "foo.>" matches "foo", "foo.bar", "foo.bar.baz", etc.
+	//   - — matches exactly one token (between dots), e.g., "foo.*.bar" matches "foo.x.bar" but not "foo.x.y.bar"
+	//     >  — matches one or more tokens until the end, e.g., "foo.>" matches "foo", "foo.bar", "foo.bar.baz", etc.
+	//
 	// Multiple wildcards can be used in a single pattern. Tokens are dot-separated.
 	KeyPattern string `protobuf:"bytes,1,opt,name=key_pattern,json=keyPattern,proto3" json:"key_pattern,omitempty"`
 	// Whether to include expired objects.
@@ -427,7 +428,7 @@ func (x *QueryRequest) GetTarget() PersistanceTarget {
 	return PersistanceTarget_UNKNOWN
 }
 
-//*
+// *
 // For getting an exact value to a key you already have
 type GetRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -580,7 +581,7 @@ func (*GetResponse_Object) isGetResponse_Result() {}
 
 func (*GetResponse_Empty) isGetResponse_Result() {}
 
-//*
+// *
 // Paginator for database entry cursor-pagination.
 type Paginator struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -720,7 +721,7 @@ func (x *PageInfo) GetPrevPage() int32 {
 	return 0
 }
 
-//*
+// *
 // Result of `Query` RPC.
 type QueryResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -776,7 +777,7 @@ func (x *QueryResponse) GetPageInfo() *PageInfo {
 	return nil
 }
 
-//*
+// *
 // Request for creating a developer-defined MongoDB index.
 type CreateIndexRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -851,7 +852,7 @@ func (x *CreateIndexRequest) GetUnique() bool {
 	return false
 }
 
-//*
+// *
 // A single field inside a developer-defined index.
 type IndexField struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -907,7 +908,7 @@ func (x *IndexField) GetDirection() IndexField_IndexDirection {
 	return IndexField_UNKNOWN
 }
 
-//*
+// *
 // Response returned after creating or confirming an index.
 type CreateIndexResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -954,13 +955,14 @@ func (x *CreateIndexResponse) GetName() string {
 	return ""
 }
 
-//*
+// *
 // Message type for the listen stream.
 type ListenMessage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Pattern to match keys. Supports wildcards:
-	//   *  - matches exactly one token (between dots), e.g., "foo.*.bar" matches "foo.x.bar" but not "foo.x.y.bar"
-	//   >  - matches one or more tokens until the end, e.g., "foo.>" matches "foo", "foo.bar", "foo.bar.baz", etc.
+	//   - - matches exactly one token (between dots), e.g., "foo.*.bar" matches "foo.x.bar" but not "foo.x.y.bar"
+	//     >  - matches one or more tokens until the end, e.g., "foo.>" matches "foo", "foo.bar", "foo.bar.baz", etc.
+	//
 	// Multiple wildcards can be used in a single pattern. Tokens are dot-separated.
 	KeyPattern    []string `protobuf:"bytes,1,rep,name=key_pattern,json=keyPattern,proto3" json:"key_pattern,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -1004,7 +1006,7 @@ func (x *ListenMessage) GetKeyPattern() []string {
 	return nil
 }
 
-//*
+// *
 // Represents a event in the stream.
 type EventCall struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
